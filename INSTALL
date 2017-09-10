@@ -1,0 +1,22 @@
+Install instructions
+--------------------
+
+- Install as usual:
+
+        $ ./configure
+        $ make
+        # make install
+
+- To Uninstall:
+
+        # make uninstall
+
+### Or for build a Arch Linux packgage:
+
+- Execute:
+
+        $ make pkg
+
+- And then install:
+
+        # pacman -U snapman-*.pkg.xz

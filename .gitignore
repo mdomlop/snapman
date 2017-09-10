@@ -1,0 +1,7 @@
+*~
+*.swp
+*.kate-swp
+*.swo
+*.xz
+*.gz
+makefile

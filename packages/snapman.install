@@ -1,0 +1,14 @@
+post_install() {
+    systemctl daemon-reload
+}
+
+post_upgrade() {
+    systemctl daemon-reload
+}
+
+pre_remove() {
+    echo 'Stoping an disabling snapman.timer... '
+    systemctl stop snapman.service
+    systemctl disable snapman.service
+}
+

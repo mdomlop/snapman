@@ -1,0 +1,11 @@
+TODO
+====
+
+*(in priority order)*
+
+- Write english documentation.
+- find() funtion like this:
+        * `-f`, `--find`=[<file>]:
+        Finds all versions of *file* stored at backups.
+- Make a deb package.
+- Make a rpm package.

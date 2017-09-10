@@ -1,0 +1,18 @@
+NEWS
+====
+
+201709100845:
+    - La aplicación ahora se llama Snapman. Me gustaba Timemachine, pero a Apple se le 
+    ocurrió primero.
+
+201707142148:
+
+    - Montones de cambios.
+
+201602071230:
+
+    - ¡Montones de cambios!
+    - Añadido fichero de configuración.
+    - Más flexibilidad.
+    - Opciones de línea de comandos cambiadas.
+    - Se elimina el soporte python 2.
