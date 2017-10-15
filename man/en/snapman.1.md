@@ -18,7 +18,7 @@ capture snapshots of subvolumes.
 When you run `snapman` without options it will read the default 
 configuration file in `/etc/snapman.ini` and then it will make 
 backups (snapshots) of indicated subvolumes at desired frequency until
-reach a defined quota. I quota were reached, then it will remove the older
+reach a defined quota. If quota were reached, then it will remove the older
 backup before to make a new one to keep the number of backups indicated in
 quota.
 
