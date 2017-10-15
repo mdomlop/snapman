@@ -1,6 +1,6 @@
 % SNAPMAN(1)
 % Manuel Domínguez López
-% July 2017
+% October 2017
 
 # NAME
 
@@ -47,13 +47,13 @@ As mentioned before, you must restart the service if you performs changes on con
 # OPTIONS
 
 **-c**, **--configfile**=[*file*]:
-:    Indicates an alternative configuration file *file* rather than the default one `/etc/snapman.ini`.
+:    Uses an alternative configuration file *file* rather than the default one `/etc/snapman.ini`.
 
 **-s**, **--sample**
-:    Prints a sample configuration file to stdout and exit without performing any other actions.
+:    Prints a sample configuration file to stdout and exits.
 
 **-h**, **--help**
-:    Prints information about usage.
+:    Prints information about usage and exits.
 
 **-d**, **--daemon**
 :    Starts the program in daemon mode. In this mode `snapman` will keep in execution performing snapshots when necessary.
@@ -61,16 +61,41 @@ As mentioned before, you must restart the service if you performs changes on con
 **--pidfile**=[*file*]:
 :    Writes the PID of the program to *file*.
 
-**--purge**
-:    Deletes all the snapshots.
+**--section-list**
+:   Prints a list of all sections managed from configuration file.
 
+**--section-snapshot-list** *Section name*
+:   Prints a list of all snapshots taked by the section *Section name*.
 
+**--section-snapshot-clean** *Section name*
+:   Deletes all snapshots taked by the section *Section name*.
+
+**--section-info** *Section name*
+:   Prints out some information of the section *Section name*.
+
+**--section-properties** *Section name*
+:   Prints out the properties of the section *Section name*.
+
+**--subvolume-list**
+:   Prints a list of all subvolumes managed from configuration file.
+
+**--subvolume-snapshot-list** */path/to/snapshot*
+:   Prints a list of all snapshots taked from subvolume */path/to/subvolume*.
+
+**--subvolume-snapshot-clean** */path/to/snapshot*
+:   Deletes all snapshots taked from subvolume */path/to/subvolume*.
+
+**--subvolume-info** */path/to/subvolume*
+:   Prints out some information of the subvolume */path/to/subvolume*.
+
+**--snapshot-info** */path/to/snapshot*
+:   Prints out some information of the snapshot */path/to/snapshot*.
 
 # RETURN VALUES
 
 **0**
 :    Normal exit. No errors founded.
-    
+
 **1**
 :    The program can not found the configuration file.
     
