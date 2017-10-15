@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 docs=(AUTHORS BUGS ChangeLog CREDITS FAQ INSTALL NEWS README README.es THANKS TODO USAGE USAGE.es)
 mkd=()
