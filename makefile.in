@@ -15,7 +15,7 @@ docs: manpages doc
 install: install_doc
 	install -Dm 755 src/$(NAME).py $(DESTDIR)/$(PREFIX)/bin/$(NAME)
 	install -Dm 644 src/$(NAME).ini $(DESTDIR)/etc/$(NAME).ini
-	install -Dm 644 src/$(NAME).service $(DESTDIR)/$(PREFIX)/lib/systemd/system/$(NAME).service
+	install -Dm 644 src/$(NAME).service $(DESTDIR)/lib/systemd/system/$(NAME).service
 	install -Dm 644 LICENSE $(DESTDIR)/$(PREFIX)/share/licenses/$(NAME)/COPYING
 	install -Dm 644 $(NAME).1.gz $(DESTDIR)/$(PREFIX)/share/man/man1/$(NAME).1.gz
 	install -Dm 644 $(NAME).5.gz $(DESTDIR)/$(PREFIX)/share/man/man5/$(NAME).5.gz
@@ -23,7 +23,7 @@ install: install_doc
 uninstall:
 	rm -f $(PREFIX)/bin/$(NAME)
 	rm -f /etc/$(NAME).ini
-	rm -f $(PREFIX)/lib/systemd/system/$(NAME).service
+	rm -f /lib/systemd/system/$(NAME).service
 	rm -rf $(PREFIX)/share/licenses/$(NAME)/
 	rm -rf $(PREFIX)/share/doc/$(NAME)/
 	rm -f $(PREFIX)/share/man/man1/$(NAME).1.gz
