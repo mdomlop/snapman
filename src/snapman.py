@@ -64,9 +64,9 @@ class Section():
         total_s = str(len(list_s))
         newer_s = list_s[0]
         older_s = list_s[-1]
-        qperc = str(int(total_s) * 100 / int(self.quota))
+        qperc = str(round(int(total_s) * 100 / int(self.quota), 2))
         print(
-            'Snapshots:', total_s +
+            'Snapshots:', total_s, '/', str(self.quota) +
             '\nQuota:', qperc, '%' +
             '\nNewer:', newer_s +
             '\nOlder:', older_s
@@ -200,26 +200,45 @@ def parseargs():
     pidfile = None  # Writes pidfile.
 
     parser = argparse.ArgumentParser(
-            prog='Snapman',
+            prog='snapman',
             description='A Btrfs snapshots manager'
             )
 
-    parser.add_argument('-c', '--configfile', default=configfile)
-    parser.add_argument('-p', '--pidfile', default=pidfile)
-    parser.add_argument('-s', '--sample', default=False, action='store_true')
-    parser.add_argument('-d', '--daemon', default=False, action='store_true')
-    parser.add_argument('-v', '--verbose', default=False, action='store_true')
-    parser.add_argument('--section-list', default=False, action='store_true')
-    parser.add_argument('--section-snapshot-list', default=None)
-    parser.add_argument('--section-snapshot-path-list', default=None)
-    parser.add_argument('--section-snapshot-clean', default=None)
-    parser.add_argument('--section-info', default=None)
-    parser.add_argument('--section-properties', default=None)
-    parser.add_argument('--subvolume-list', default=False, action='store_true')
-    parser.add_argument('--subvolume-snapshot-list', default=None)
-    parser.add_argument('--subvolume-snapshot-clean', default=None)
-    parser.add_argument('--subvolume-info', default=None)
-    parser.add_argument('--snapshot-info', default=None)
+    parser.add_argument('-c', '--configfile', default=configfile,
+                        help='Alternative configuration file')
+    parser.add_argument('-p', '--pidfile', default=pidfile,
+                        help='Write a pidfile')
+    parser.add_argument('-s', '--sample', default=False, action='store_true',
+                        help='Print out a sample configuration file')
+    parser.add_argument('-d', '--daemon', default=False, action='store_true',
+                        help='Execute in daemon mode')
+    parser.add_argument('-v', '--verbose', default=False, action='store_true',
+                        help='Set verbosity on')
+    
+    parser.add_argument('--section-list', default=False, action='store_true',
+                        help='Show the sections managed')
+    parser.add_argument('--section-snapshot-list', default=None,
+                        help='Show the list of snapshots taked from the section')
+    parser.add_argument('--section-snapshot-path-list', default=None,
+                        help='Show the list of paths to snapshots taked from the section')
+    parser.add_argument('--section-snapshot-clean', default=None,
+                        help='Delete all snapshots taked from the section')
+    parser.add_argument('--section-info', default=None,
+                        help='Show some information about the section status')
+    parser.add_argument('--section-properties', default=None,
+                        help='Print out the properties configured for the section')
+    
+    parser.add_argument('--subvolume-list', default=False, action='store_true',
+                        help='Show a list of all subvolumes managed by configuration file')
+    parser.add_argument('--subvolume-snapshot-list', default=None,
+                        help='Show a list of all snapshots taked from the given subvolume')
+    parser.add_argument('--subvolume-snapshot-clean', default=None,
+                        help='Delete all snapshots taked from given subvolume')
+    parser.add_argument('--subvolume-info', default=None,
+                        help='Show some information about the subvolume status')
+    
+    parser.add_argument('--snapshot-info', default=None,
+                        help='Show some information about the snapshot status')
 
     if not os.path.exists(parser.parse_args().configfile):
         clean_exit('ERROR: I can not find the configuration file.', 1)
@@ -297,19 +316,49 @@ def main():
 # This is the config file for snapman.py. It will be parsed by configparser
 # python module.
 # Copy this file in /etc/snapman.ini and edit it at your preferences.
-# You can also set an alternative config file with -c command line option.
-# Command line setted options will overwrite this settings.
+
+# The section name is the absolute path to directory where the snapshots
+# were be stored.
+# [DEFAULT] section is special. The rest of sections take their values from it
+# by default.
 
 [DEFAULT]
 # Default values for all sections.
-# The directory where were stored the snapshots.
-#store = /.snapman
-# Full path to subvolume to copy.
+# Full path to subvolume to copy:
 subvolume = /
-# Directories in name:minage[m|h|d|y]:quota format (comma separated).
-directories = 15m:15m:4, 60m:60m:24, diaria:24h:30, semanal:10y:48
-# True for a readonly copy.
-readonly = false
+# The frequency in seconds, minutes, hours, days or years (see man 5 snapman):
+frequency = 1d
+# The maximun number of allowed snapshots:
+quota = 30
+# Set to True for a readonly snapshot, otherwise set to False:
+readonly = True
+
+[/.snapshots]
+# Snapshots of root directory at /.snapshots with default frequency and quota.
+
+[/home/user/.snapshots]
+# Writables snapshots of a user home directory every hour of the last 24 hours.
+subvolume = /home/user
+frequency = 1h
+quota = 24
+readonly = False
+
+[/home/user/Recent]
+# Writables snapshots of a user home directory every 5 minutes. Until the
+# last half hour.
+# Useful, among other things, to cheat the mincraft game. To do this 
+while gaming if you die: 
+# 1. Save and Quit to Title
+# 2. Open a terminal and write:
+# rsync -aHv --delete ~/Recent/backup of 5m ago/.minecraft/ ~/.minecraft/
+# 3. Return to the game and enjoy your inmortality. ;-)
+subvolume = /home/user
+frequency = 5m
+quota = 6
+readonly = False
+
+[/pools/DATA/Copies/Music]
+# Default values to snapshots of /pools/DATA/Music at /pools/DATA/Copies/Music
 ''')
 
     elif args.section_list:
@@ -371,8 +420,9 @@ readonly = false
             clean_exit('No section manages the subvolume: ' + sub, 6)
 
     elif args.subvolume_info:
-        clean_exit('Not implemented yet', 10)
+        clean_exit('SORRY: Not implemented yet :-P', 10)
     elif args.snapshot_info:
+        clean_exit('SORRY: Not implemented yet :-P', 10)
         sub = args.snapshot_info
         if sub != '/':  # Prevent strip filesystem root.
             sub = sub.rstrip('/')
