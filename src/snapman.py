@@ -313,7 +313,6 @@ readonly = false
 ''')
 
     elif args.section_list:
-        print('fasdfasdfas')
         for i in settings.sections():
             print(i)
     elif args.section_snapshot_list:
