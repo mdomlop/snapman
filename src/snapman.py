@@ -35,15 +35,18 @@ class Section():
             clean_exit('No section in config file: ' + name, 8)
 
         self.name = name  # The name of section in config file (a path).
-        self.sformat = '%Y-%m-%d %H:%M:%S'
+        self.sformat = '%Y%m%d-%H%M%S'
 
-    def snapshot_list(self):
-        try:
-            l = os.listdir(self.name)
-        except FileNotFoundError:
-            clean_exit(
-                'ERROR: In can not found the directory: ' + self.name, 4)
-        return(l)
+    def snapshot_list(self):  # FIXME
+        if os.path.isdir(self.name):
+            try:
+                l = os.listdir(self.name)
+            except FileNotFoundError:
+                clean_exit(
+                    'ERROR: In can not found the directory: ' + self.name, 4)
+            return(l)
+        else:
+            return([])
 
     def print_snapshot_list(self):
         for i in self.snapshot_list():
