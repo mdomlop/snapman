@@ -28,16 +28,17 @@ class Section():
     def __init__(self, name):
         if name in settings.sections():
             self.subvolume = settings[name]['subvolume']
-            self.frequency = toseconds(settings[name]['frequency'])
+            self.frequency_prop = settings[name]['frequency']
+            self.frequency = toseconds(self.frequency_prop)
             self.quota = settings[name].getint('quota')
             self.readonly = settings[name].getboolean('readonly')
         else:
-            clean_exit('No section in config file: ' + name, 8)
+            clean_exit('Section not found: ' + name, 8)
 
         self.name = name  # The name of section in config file (a path).
         self.sformat = '%Y%m%d-%H%M%S'
 
-    def snapshot_list(self):  # FIXME
+    def snapshot_list(self):
         if os.path.isdir(self.name):
             try:
                 l = os.listdir(self.name)
@@ -48,21 +49,38 @@ class Section():
         else:
             return([])
 
-    def print_snapshot_list(self):
+    def print_snapshots(self):
         for i in self.snapshot_list():
             print(i)
 
     def print_properties(self):
+        if args.verbose:
+            print('[' + self.name + ']')
         print('subvolume =', self.subvolume + '\n' +
-              'frequency =', str(self.frequency) + '\n' +
+              'frequency =', self.frequency_prop + '\n' +
               'quota =', str(self.quota) + '\n' +
               'readonly =', self.readonly)
 
-    def print_snapshot_path_list(self):
+    def print_snapshots_path(self):
         for i in self.snapshot_list():
             print(os.path.join(self.name, i))
 
+    def percent(self):
+        return(round(int(self.snapshot_count()) * 100 / self.quota / 2))
+    
     def info(self):
+        total_s = str(self.snapshot_count())
+        newer_s = self.newer_snapshot()
+        older_s = self.older_snapshot()
+        qperc = str(self.percent())
+        print(
+            'Snapshots:', total_s + '/' + str(self.quota) +
+            '\nQuota:', qperc + '%' +
+            '\nNewer:', newer_s +
+            '\nOlder:', older_s
+            )
+        
+    def info2(self):
         list_s = self.snapshot_list()
         total_s = str(len(list_s))
         newer_s = list_s[0]
@@ -75,15 +93,20 @@ class Section():
             '\nOlder:', older_s
             )
 
-    def snapshot_list_len(self):
+    def snapshot_count(self):
         return(len(self.snapshot_list()))
 
     def newer_snapshot(self):
-        return(self.snapshot_list()[-1])
+        if self.snapshot_count():
+            return(self.snapshot_list()[-1])
+        else:
+            return('')
 
     def older_snapshot(self):
-        return(self.snapshot_list()[0])
-
+        if self.snapshot_count():
+            return(self.snapshot_list()[0])
+        else:
+            return('')
     def path_older_snapshot(self):
         return(os.path.join(self.name, self.older_snapshot()))
 
@@ -91,7 +114,7 @@ class Section():
         return(os.path.join(self.name, self.newer_snapshot()))
 
     def quota_diff(self):
-        return(self.snapshot_list_len() - self.quota)
+        return(self.snapshot_count() - self.quota)
 
     def now(self):
         return(datetime.datetime.now().strftime(self.sformat))
@@ -127,7 +150,8 @@ class Section():
         for i in self.snapshot_list():
             s = os.path.join(self.name, i)
             self.delete(s)
-        self.delete(self.name)
+        if os.path.isdir(self.name):
+            self.delete(self.name)
 
     def clean_quota(self):
         quota_diff = self.quota_diff()
@@ -145,7 +169,7 @@ class Section():
             clean_exit('ERROR: I can not create the directory: ' +
                        self.name, 5)
         self.clean_quota()
-        if self.snapshot_list_len() == 0:  # Make a copy if directory is empty.
+        if self.snapshot_count() == 0:  # Make a copy if directory is empty.
             self.write()
         else:
             # Make a copy if newer copy is older than minage.
@@ -218,24 +242,22 @@ def parseargs():
     parser.add_argument('-v', '--verbose', default=False, action='store_true',
                         help='Set verbosity on')
     
-    parser.add_argument('--section-list', default=False, action='store_true',
-                        help='Show the sections managed')
-    parser.add_argument('--section-snapshot-list', default=None,
+    parser.add_argument('--sections', default=False, action='store_true',
+                        help='Show the managed sections')
+    parser.add_argument('--section-snapshots', default=None,
                         help='Show the list of snapshots taked from the section')
-    parser.add_argument('--section-snapshot-path-list', default=None,
-                        help='Show the list of paths to snapshots taked from the section')
-    parser.add_argument('--section-snapshot-clean', default=None,
+    parser.add_argument('--section-clean', default=None,
                         help='Delete all snapshots taked from the section')
     parser.add_argument('--section-info', default=None,
                         help='Show some information about the section status')
     parser.add_argument('--section-properties', default=None,
                         help='Print out the properties configured for the section')
     
-    parser.add_argument('--subvolume-list', default=False, action='store_true',
+    parser.add_argument('--subvolumes', default=False, action='store_true',
                         help='Show a list of all subvolumes managed by configuration file')
-    parser.add_argument('--subvolume-snapshot-list', default=None,
+    parser.add_argument('--subvolume-snapshots', default=None,
                         help='Show a list of all snapshots taked from the given subvolume')
-    parser.add_argument('--subvolume-snapshot-clean', default=None,
+    parser.add_argument('--subvolume-clean', default=None,
                         help='Delete all snapshots taked from given subvolume')
     parser.add_argument('--subvolume-info', default=None,
                         help='Show some information about the subvolume status')
@@ -364,19 +386,25 @@ readonly = False
 # Default values to snapshots of /pools/DATA/Music at /pools/DATA/Copies/Music
 ''')
 
-    elif args.section_list:
-        for i in settings.sections():
-            print(i)
-    elif args.section_snapshot_list:
-        s = args.section_snapshot_list.rstrip('/')
+    elif args.sections:
+        if not args.verbose:
+            for i in settings.sections():
+                print(i)
+        else:
+            for i in settings.sections():
+                x = Section(i)
+                n = x.name
+                c = str(x.snapshot_count())
+                t = str(x.quota)
+                r = 'readonly' if x.readonly else 'writable'
+                s = x.subvolume
+                print(n + ':', c + '/' + t, r, 'from', s)
+    elif args.section_snapshots:
+        s = args.section_snapshots.rstrip('/')
         x = Section(s)
-        x.print_snapshot_list()
-    elif args.section_snapshot_path_list:
-        s = args.section_snapshot_path_list.rstrip('/')
-        x = Section(s)
-        x.print_snapshot_path_list()
-    elif args.section_snapshot_clean:
-        s = args.section_snapshot_clean.rstrip('/')
+        x.print_snapshots_path()
+    elif args.section_clean:
+        s = args.section_clean.rstrip('/')
         x = Section(s)
         x.snapshot_clean()
     elif args.section_info:
@@ -387,15 +415,15 @@ readonly = False
         s = args.section_properties.rstrip('/')
         x = Section(s)
         x.print_properties()
-    elif args.subvolume_list:
+    elif args.subvolumes:
         l = []
         for s in settings.sections():
             l.append(settings[s]['subvolume'])
         for i in sorted(set(l)):
             print(i)
 
-    elif args.subvolume_snapshot_list:
-        sub = args.subvolume_snapshot_list
+    elif args.subvolume_snapshots:
+        sub = args.subvolume_snapshots
         if sub != '/':  # Prevent strip filesystem root.
             sub = sub.rstrip('/')
 
@@ -404,12 +432,17 @@ readonly = False
             if sub == settings[i]['subvolume']:
                 found = True
                 x = Section(i)
-                x.print_snapshot_path_list()
+                if not args.verbose:
+                    x.print_snapshots_path()
+                else:
+                    n = x.print_snapshots_path()
+                    s = x.name
+                    print(n, 'from', s)
         if not found:
             clean_exit('No section manages the subvolume: ' + sub, 6)
 
-    elif args.subvolume_snapshot_clean:
-        sub = args.subvolume_snapshot_clean
+    elif args.subvolume_clean:
+        sub = args.subvolume_clean
         if sub != '/':  # Prevent strip filesystem root.
             sub = sub.rstrip('/')
 
@@ -433,7 +466,7 @@ readonly = False
         found = False
         for i in settings.sections():
                 x = Section(i)
-                if sub in x.print_snapshot_path_list():
+                if sub in x.print_snapshots_path():
                     found = True
                     print(x.name)
         if not found:

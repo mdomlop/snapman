@@ -47,49 +47,49 @@ As mentioned before, you must restart the service if you performs changes on con
 # OPTIONS
 
 **-c**, **--configfile**=[*file*]:
-:    Uses an alternative configuration file *file* rather than the default one `/etc/snapman.ini`.
+:    Use an alternative configuration file *file* rather than the default one `/etc/snapman.ini`.
 
 **-s**, **--sample**
-:    Prints a sample configuration file to stdout and exits.
+:    Print a sample configuration file to stdout and exit.
 
 **-h**, **--help**
-:    Prints information about usage and exits.
+:    Print information about usage and exit.
 
 **-d**, **--daemon**
-:    Starts the program in daemon mode. In this mode `snapman` will keep in execution performing snapshots when necessary.
+:    Start the program in daemon mode. In this mode `snapman` will keep in execution performing snapshots when necessary.
     
 **--pidfile**=[*file*]:
-:    Writes the PID of the program to *file*.
+:    Write the PID of the program to *file*.
 
-**--section-list**
-:   Prints a list of all sections managed from configuration file.
+**--sections**
+:   Print a list of all sections managed from configuration file.
 
-**--section-snapshot-list** *Section name*
-:   Prints a list of all snapshots taked by the section *Section name*.
+**--section-snapshots** *Section name*
+:   Print a list of all snapshots taked by the section *Section name*.
 
-**--section-snapshot-clean** *Section name*
-:   Deletes all snapshots taked by the section *Section name*.
+**--section-clean** *Section name*
+:   Delete all snapshots taked by the section *Section name*.
 
 **--section-info** *Section name*
-:   Prints out some information of the section *Section name*.
+:   Print out some information of the section *Section name*.
 
 **--section-properties** *Section name*
-:   Prints out the properties of the section *Section name*.
+:   Print out the properties of the section *Section name*.
 
-**--subvolume-list**
-:   Prints a list of all subvolumes managed from configuration file.
+**--subvolumes**
+:   Print a list of all subvolumes managed from configuration file.
 
-**--subvolume-snapshot-list** */path/to/snapshot*
-:   Prints a list of all snapshots taked from subvolume */path/to/subvolume*.
+**--subvolume-snapshots** */path/to/snapshot*
+:   Print a list of all snapshots taked from subvolume */path/to/subvolume*.
 
-**--subvolume-snapshot-clean** */path/to/snapshot*
-:   Deletes all snapshots taked from subvolume */path/to/subvolume*.
+**--subvolume-clean** */path/to/snapshot*
+:   Delete all snapshots taked from subvolume */path/to/subvolume*.
 
 **--subvolume-info** */path/to/subvolume*
-:   Prints out some information of the subvolume */path/to/subvolume*.
+:   Print out some information of the subvolume */path/to/subvolume*.
 
 **--snapshot-info** */path/to/snapshot*
-:   Prints out some information of the snapshot */path/to/snapshot*.
+:   Print out some information of the snapshot */path/to/snapshot*.
 
 # RETURN VALUES
 
@@ -113,7 +113,7 @@ As mentioned before, you must restart the service if you performs changes on con
 **`/etc/snapman.ini`**
 :    Default configuration file provided. Sets all stuff about snapshots. Edit at your preferences. See snapman(5).
     
-**`/usr/lib/systemd/system/snapman.service`**
+**`/lib/systemd/system/snapman.service`**
 :    The systemd service.
 
 

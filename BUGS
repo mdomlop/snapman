@@ -1,6 +1,1 @@
 - Probably. If you found any let me know, please.
-
-- The execution frequency of the copies is not accurate because it depends on
-being multiple of the frequency of the copy that is executed with a smaller
-frequency. The solution should be to run each copy in its own separate thread
-or process.
