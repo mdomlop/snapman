@@ -36,60 +36,88 @@ You can print to `stdout` an example configuration file with the
 
 You can run periodically this program if you use the `--daemon` option.
 
-Because a misconfigured or non-existent configuration file does not allow the execution of the program, such file only is readed one time. I you performs changes on it, you may to restart the program, if you want these changes to be applied.
+Because a misconfigured or non-existent configuration file does not allow the 
+execution of the program, such file only is readed one time. I you performs 
+changes on it, you may to restart the program, if you want these changes to be 
+applied.
 
 # SYSTEMD SERVICE
 
-A systemd service was provided for execute in daemon mode. Just start and enable `snapman.service`.
+A systemd service was provided for execute in daemon mode. Just start and 
+enable `snapman.service`.
 
-As mentioned before, you must restart the service if you performs changes on configuration file and want these changes to be applied.
+As mentioned before, you must restart the service if you performs changes on 
+configuration file and want these changes to be applied.
 
 # OPTIONS
 
-**-c**, **--configfile**=[*file*]:
-:    Use an alternative configuration file *file* rather than the default one `/etc/snapman.ini`.
+## General options
 
-**-s**, **--sample**
-:    Print a sample configuration file to stdout and exit.
-
-**-h**, **--help**
-:    Print information about usage and exit.
+**-c**, **--configfile**=[*file*]
+:    Use an alternative configuration file *file* rather than the default one 
+`/etc/snapman.ini`.
 
 **-d**, **--daemon**
-:    Start the program in daemon mode. In this mode `snapman` will keep in execution performing snapshots when necessary.
-    
+:    Start the program in daemon mode. In this mode `snapman` will keep in 
+execution performing snapshots when necessary.
+
+**-h**, **--help**=[*file*]
+:    Show help message and exit.
+  
+**-s**, **--sample**
+:    Print a sample configuration file to stdout and exit.
+  
+**-v**, **--verbose**
+:    Set verbosity on. This option shows additional information in the command 
+output if available.
+
 **--pidfile**=[*file*]:
-:    Write the PID of the program to *file*.
+:    Write the PID of the program to *file*. *file* must be a full path. 
+Usually `/run/snapman.pid`.
+
+
+## Section related options
 
 **--sections**
-:   Print a list of all sections managed from configuration file.
+:   Print a list of all sections currently managed by the program.
 
-**--section-snapshots** *Section name*
-:   Print a list of all snapshots taked by the section *Section name*.
+**--section-snapshots**=[*section*]
+:   Print a list of all snapshots taked by the section *section*.
 
-**--section-clean** *Section name*
-:   Delete all snapshots taked by the section *Section name*.
+**--section-clean**=[*section*]
+:   Delete all snapshots taked by the section *section*.
 
-**--section-info** *Section name*
-:   Print out some information of the section *Section name*.
+**--section-info**=[*section*]
+:   Print out some information about the section *section*.
 
-**--section-properties** *Section name*
-:   Print out the properties of the section *Section name*.
+**--section-properties**=[*section*]
+:   Print out the properties of the section *section*.
+
+## Subvolume related options
 
 **--subvolumes**
-:   Print a list of all subvolumes managed from configuration file.
+:   Print a list of all subvolumes currently managed by the program.
 
-**--subvolume-snapshots** */path/to/snapshot*
+**--subvolume-snapshots**=[*/path/to/subvolume*]
 :   Print a list of all snapshots taked from subvolume */path/to/subvolume*.
 
-**--subvolume-clean** */path/to/snapshot*
+**--subvolume-sections**=[*/path/to/subvolume*]
+:   Prints a list of all the sections that manage the given subvolume
+*/path/to/subvolume*.
+
+**--subvolume-clean**=[*/path/to/subvolume*]
 :   Delete all snapshots taked from subvolume */path/to/subvolume*.
 
-**--subvolume-info** */path/to/subvolume*
-:   Print out some information of the subvolume */path/to/subvolume*.
+**--subvolume-info**=[*/path/to/subvolume*]
+:   Print out some information about the subvolume */path/to/subvolume*.
 
-**--snapshot-info** */path/to/snapshot*
-:   Print out some information of the snapshot */path/to/snapshot*.
+## Snapshot related options
+
+**--snapshots**
+:   Print a list of all snapshots currently managed by the program.
+
+**--snapshot-info**=[*/path/to/snapshot*]
+:   Print out some information about the snapshot */path/to/snapshot*.
 
 # RETURN VALUES
 
@@ -103,7 +131,8 @@ As mentioned before, you must restart the service if you performs changes on con
 :    Failed to convert to seconds the frecuency value from configuration file.
     
 **3**
-:    Snapshots stored in disk have a name in a format that not match with `%Y-%m-%d %H:%M:%S` format.
+:    Snapshots stored in disk have a name in a format that not match with 
+`%Y-%m-%d %H:%M:%S` format.
 
 **130**
 :    `KeyboardInterrupt` signal received.
@@ -111,7 +140,8 @@ As mentioned before, you must restart the service if you performs changes on con
 # FILES
 
 **`/etc/snapman.ini`**
-:    Default configuration file provided. Sets all stuff about snapshots. Edit at your preferences. See snapman(5).
+:    Default configuration file provided. Sets all stuff about snapshots. Edit 
+at your preferences. See snapman(5).
     
 **`/lib/systemd/system/snapman.service`**
 :    The systemd service.
@@ -119,7 +149,10 @@ As mentioned before, you must restart the service if you performs changes on con
 
 # HISTORY
 
-The idea arose inspired by the program Time Machine® own of the system Mac OS X. However, they do not have the slightest similarity. Originally this program was called Timemachine. But because 'Time Machine' is a trademark of Apple® I decided to change its name to Snapman.
+The idea arose inspired by the program Time Machine® own of the system Mac OS 
+X. However, they do not have the slightest similarity. Originally this program 
+was called Timemachine. But because 'Time Machine' is a trademark of Apple® I 
+decided to change its name to Snapman.
 
 # BUGS
 

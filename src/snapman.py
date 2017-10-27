@@ -38,21 +38,20 @@ class Section():
         self.name = name  # The name of section in config file (a path).
         self.sformat = '%Y%m%d-%H%M%S'
 
-    def snapshot_list(self):
-        if os.path.isdir(self.name):
-            try:
-                l = os.listdir(self.name)
-            except FileNotFoundError:
-                clean_exit(
-                    'ERROR: In can not found the directory: ' + self.name, 4)
-            return(l)
-        else:
-            return([])
+    def snapshot_list(self, path=True):
+        ''' Return a list of snapshots or a empty list '''
+        try:
+            l = os.listdir(self.name)
+        except FileNotFoundError:
+            l = []
+        if path:
+            l = list(map(lambda x: os.path.join(self.name, x), l))
+        return(l)
 
-    def print_snapshots(self):
+    def print_snapshots(self, path=True):
         for i in self.snapshot_list():
             print(i)
-
+            
     def print_properties(self):
         if args.verbose:
             print('[' + self.name + ']')
@@ -60,10 +59,6 @@ class Section():
               'frequency =', self.frequency_prop + '\n' +
               'quota =', str(self.quota) + '\n' +
               'readonly =', self.readonly)
-
-    def print_snapshots_path(self):
-        for i in self.snapshot_list():
-            print(os.path.join(self.name, i))
 
     def percent(self):
         return(round(int(self.snapshot_count()) * 100 / self.quota / 2))
@@ -73,22 +68,12 @@ class Section():
         newer_s = self.newer_snapshot()
         older_s = self.older_snapshot()
         qperc = str(self.percent())
+        if args.verbose:
+            print('Section:', self.name)
         print(
-            'Snapshots:', total_s + '/' + str(self.quota) +
+            'From:', self.subvolume +
+            '\nSnapshots:', total_s + '/' + str(self.quota) +
             '\nQuota:', qperc + '%' +
-            '\nNewer:', newer_s +
-            '\nOlder:', older_s
-            )
-        
-    def info2(self):
-        list_s = self.snapshot_list()
-        total_s = str(len(list_s))
-        newer_s = list_s[0]
-        older_s = list_s[-1]
-        qperc = str(round(int(total_s) * 100 / int(self.quota), 2))
-        print(
-            'Snapshots:', total_s, '/', str(self.quota) +
-            '\nQuota:', qperc, '%' +
             '\nNewer:', newer_s +
             '\nOlder:', older_s
             )
@@ -240,7 +225,7 @@ def parseargs():
     parser.add_argument('-d', '--daemon', default=False, action='store_true',
                         help='Execute in daemon mode')
     parser.add_argument('-v', '--verbose', default=False, action='store_true',
-                        help='Set verbosity on')
+                        help='Set verbosity on if available')
     
     parser.add_argument('--sections', default=False, action='store_true',
                         help='Show the managed sections')
@@ -257,11 +242,15 @@ def parseargs():
                         help='Show a list of all subvolumes managed by configuration file')
     parser.add_argument('--subvolume-snapshots', default=None,
                         help='Show a list of all snapshots taked from the given subvolume')
+    parser.add_argument('--subvolume-sections', default=None,
+                        help='Show a list of all sections which manage the given subvolume')
     parser.add_argument('--subvolume-clean', default=None,
                         help='Delete all snapshots taked from given subvolume')
     parser.add_argument('--subvolume-info', default=None,
                         help='Show some information about the subvolume status')
-    
+
+    parser.add_argument('--snapshots', default=False, action='store_true',
+                        help='Show a list of all subvolumes taked')    
     parser.add_argument('--snapshot-info', default=None,
                         help='Show some information about the snapshot status')
 
@@ -402,7 +391,12 @@ readonly = False
     elif args.section_snapshots:
         s = args.section_snapshots.rstrip('/')
         x = Section(s)
-        x.print_snapshots_path()
+        if args.verbose:
+            l = x.snapshot_list()
+            for i in l:
+                print(i, 'from', x.subvolume)
+        else:
+            x.print_snapshots()
     elif args.section_clean:
         s = args.section_clean.rstrip('/')
         x = Section(s)
@@ -415,13 +409,13 @@ readonly = False
         s = args.section_properties.rstrip('/')
         x = Section(s)
         x.print_properties()
+        
     elif args.subvolumes:
         l = []
         for s in settings.sections():
             l.append(settings[s]['subvolume'])
         for i in sorted(set(l)):
             print(i)
-
     elif args.subvolume_snapshots:
         sub = args.subvolume_snapshots
         if sub != '/':  # Prevent strip filesystem root.
@@ -433,11 +427,26 @@ readonly = False
                 found = True
                 x = Section(i)
                 if not args.verbose:
-                    x.print_snapshots_path()
+                    x.print_snapshots()
                 else:
-                    n = x.print_snapshots_path()
-                    s = x.name
-                    print(n, 'from', s)
+                    for s in x.snapshot_list():
+                        print(s, 'from', x.subvolume)
+        if not found:
+            clean_exit('No section manages the subvolume: ' + sub, 6)
+    elif args.subvolume_sections:
+        sub = args.subvolume_sections
+        if sub != '/':  # Prevent strip filesystem root.
+            sub = sub.rstrip('/')
+
+        found = False
+        for i in settings.sections():
+            if sub == settings[i]['subvolume']:
+                found = True
+                x = Section(i)
+                if not args.verbose:
+                    print(x.name)
+                else:
+                    print(x.name + ':', x.snapshot_count())
         if not found:
             clean_exit('No section manages the subvolume: ' + sub, 6)
 
@@ -456,21 +465,60 @@ readonly = False
             clean_exit('No section manages the subvolume: ' + sub, 6)
 
     elif args.subvolume_info:
-        clean_exit('SORRY: Not implemented yet :-P', 10)
-    elif args.snapshot_info:
-        clean_exit('SORRY: Not implemented yet :-P', 10)
-        sub = args.snapshot_info
+        sub = args.subvolume_info
         if sub != '/':  # Prevent strip filesystem root.
             sub = sub.rstrip('/')
-        sub = os.path.dirname(sub)  # Corrected dirname return /foo from /foo/
+
+        found = False
+        snap = []
+        sect = []                
+
+        for i in settings.sections():
+            if sub == settings[i]['subvolume']:
+                found = True
+                x = Section(i)
+                snap += x.snapshot_list()
+                sect.append(x.name)
+        if not found:
+            clean_exit('No section manages the subvolume: ' + sub, 6)
+        if snap:
+            sort_snaps = sorted(snap)
+            newer = sort_snaps[0]
+            older = sort_snaps[-1]
+        else:
+            newer = ''
+            older = ''
+        if args.verbose:
+            print('Subvolume:', sub)
+        print('Snapshots:', len(snap),
+              '\nSections:', len(sect),
+              '\nNewer:', newer,
+              '\nOlder:', older)
+
+    elif args.snapshots:
+        for s in settings.sections():
+            x = Section(s)
+            if args.verbose:
+                l = x.snapshot_list()
+                for i in l:
+                    print(i, 'from', x.subvolume)
+            else:
+                x.print_snapshots()
+    elif args.snapshot_info:
+        snap = args.snapshot_info
+        if snap != '/':  # Prevent strip filesystem root.
+            snap = snap.rstrip('/')
+        else:
+            clean_exit("Root directory can't be a snapshot!", 7)
         found = False
         for i in settings.sections():
                 x = Section(i)
-                if sub in x.print_snapshots_path():
+                if snap in x.snapshot_list():
                     found = True
-                    print(x.name)
+                    print('Section:', x.name,
+                          '\nSubvolume:', x.subvolume)
         if not found:
-            clean_exit('No section manages the subvolume: ' + sub, 6)
+            clean_exit('No section manages the subvolume: ' + snap, 6)
 
     elif args.daemon:
         daemon(settings)
