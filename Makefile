@@ -61,7 +61,7 @@ markdown: AUTHORS.md BUGS.md ChangeLog.md FAQ.md INSTALL.md NEWS.md README.md TH
 pkg:
 	mkdir $(TEMPDIR)
 	tar cf $(TEMPDIR)/snapman.tar ../snapman
-	cp packages/* ChangeLog $(TEMPDIR)/
+	cp pacman/* ChangeLog $(TEMPDIR)/
 	cd $(TEMPDIR); makepkg
 	cp $(TEMPDIR)/snapman-*.pkg.tar.xz .
 	@echo Package done!
