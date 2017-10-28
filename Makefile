@@ -3,6 +3,7 @@ PREFIX='/usr'
 DESTDIR=''
 TEMPDIR := $(shell mktemp -u --suffix .snapman)
 DOCS = AUTHORS BUGS ChangeLog FAQ INSTALL NEWS README THANKS TODO
+VERSION = 0.9a
 
 default: man markdown
 
@@ -71,13 +72,13 @@ pkg:
 deb: man
 	checkinstall -y --install=no \
 	--pkgname=snapman \
-	--pkgversion=0.9b \
+	--pkgversion=$(VERSION) \
 	--pkgarch=all \
 	--pkgrelease=1 \
 	--pkglicense=GPLv3+ \
 	--pkggroup=retrosmart \
-	--pkgsource=https://github.com/mdomlop/snapman/archive/0.9b.tar.gz \
-	--pkgaltsource=https://github.com/mdomlop/snapman/archive/0.9b.zip \
+	--pkgsource=https://github.com/mdomlop/snapman/archive/$(VERSION).tar.gz \
+	--pkgaltsource=https://github.com/mdomlop/snapman/archive/$(VERSION).zip \
 	--maintainer=mdomlop@gmail.com \
 	--provides=snapman \
 	--requires="python3 \(\>= 3.5\),btrfs-progs \(\>=4.7\)" \
