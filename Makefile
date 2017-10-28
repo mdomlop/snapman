@@ -1,5 +1,4 @@
 PREFIX='/usr'
-# For install things in $pkgdir/etc:
 DESTDIR=''
 TEMPDIR := $(shell mktemp -u --suffix .snapman)
 DOCS = AUTHORS BUGS ChangeLog FAQ INSTALL NEWS README THANKS TODO
