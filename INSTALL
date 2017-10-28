@@ -30,9 +30,10 @@ You can choose between different installation methods.
 ### Debian package ###
 
 - Build and install:
-    $ make deb
-    # dpkg -i snapman_*.deb
+
+        $ make deb
+        # dpkg -i snapman_*.deb
 
 - Uninstall:
     
-    # apt purge snapman
+        # apt purge snapman
