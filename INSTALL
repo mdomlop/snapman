@@ -5,7 +5,7 @@ You can choose between different installation methods.
 
 ### Classic method ###
 
-- Install as usual:
+- Build and install:
 
         $ make
         # make install
@@ -15,9 +15,9 @@ You can choose between different installation methods.
         # make uninstall
 
         
-### Arch Linux packgage ###
+### Arch Linux package ###
 
-- Install:
+- Build and install:
 
         $ make pkg
         # pacman -U snapman-*.pkg.xz
@@ -25,3 +25,14 @@ You can choose between different installation methods.
 - Uninstall:
         
         # pacman -Rsc snapman
+
+        
+### Debian package ###
+
+- Build and install:
+    $ make deb
+    # dpkg -i snapman_*.deb
+
+- Uninstall:
+    
+    # apt purge snapman

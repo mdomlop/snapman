@@ -68,7 +68,15 @@ pkg:
 	@echo You can install it as root with:
 	@echo pacman -U snapman-*.pkg.tar.xz
 
-deb:
+deb_clean:
 	fakeroot debian/rules clean
+
+deb: deb_clean
+	cp ChangeLog debian/changelog
 	fakeroot debian/rules build
 	fakeroot debian/rules binary
+	mv ../snapman_$(VERSION)_all.deb .
+	@echo Package done!
+	@echo You can install it as root with:
+	@echo dpkg -i snapman_$(VERSION)_all.deb
+	

@@ -7,7 +7,7 @@ Standards-Version: 3.9.8
 Homepage: https://github.com/mdomlop/snapman
 
 Package: snapman
-Version: 0.9a
+#Version: 0.9a
 Architecture: all
 Provides: snapman
 Conflicts: snapman-git
