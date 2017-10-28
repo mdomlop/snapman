@@ -4,4 +4,6 @@
 *.swo
 *.xz
 *.gz
-makefile
+*.tgz
+*.deb
+*.rpm
