@@ -68,18 +68,7 @@ pkg:
 	@echo You can install it as root with:
 	@echo pacman -U snapman-*.pkg.tar.xz
 
-deb: man
-	checkinstall -y --install=no \
-	--pkgname=snapman \
-	--pkgversion=$(VERSION) \
-	--pkgarch=all \
-	--pkgrelease=1 \
-	--pkglicense=GPLv3+ \
-	--pkggroup=retrosmart \
-	--pkgsource=https://github.com/mdomlop/snapman/archive/$(VERSION).tar.gz \
-	--pkgaltsource=https://github.com/mdomlop/snapman/archive/$(VERSION).zip \
-	--maintainer=mdomlop@gmail.com \
-	--provides=snapman \
-	--requires="python3 \(\>= 3.5\),btrfs-progs \(\>=4.7\)" \
-	--conflicts=snapman-git \
-	--nodoc
+deb:
+	fakeroot debian/rules clean
+	fakeroot debian/rules build
+	fakeroot debian/rules binary
