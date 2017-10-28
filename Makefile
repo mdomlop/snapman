@@ -20,6 +20,7 @@ install: $(DOCS)
 	install -Dm 755 src/snapman.py $(DESTDIR)$(PREFIX)/bin/snapman
 	install -Dm 644 src/snapman.ini $(DESTDIR)/etc/snapman.ini
 	install -Dm 644 src/snapman.service $(DESTDIR)/lib/systemd/system/snapman.service
+	install -d -m 755 $(DESTDIR)$(PREFIX)/share/licenses/snapman
 	install -Dm 644 LICENSE $(DESTDIR)$(PREFIX)/share/licenses/snapman/COPYING
 	install -Dm 644 snapman.1.gz $(DESTDIR)$(PREFIX)/share/man/man1/snapman.1.gz
 	install -Dm 644 snapman.5.gz $(DESTDIR)$(PREFIX)/share/man/man5/snapman.5.gz
@@ -34,7 +35,7 @@ uninstall:
 	rm -rf $(PREFIX)/share/doc/snapman/
 
 clean:
-	rm -rf *.xz *.md *.gz /tmp/tmp.*.snapman
+	rm -rf *.xz *.md *.gz *.tgz *.deb /tmp/tmp.*.snapman
 
 AUTHORS.md: AUTHORS
 	cp $^ $@
@@ -66,3 +67,19 @@ pkg:
 	@echo Package done!
 	@echo You can install it as root with:
 	@echo pacman -U snapman-*.pkg.tar.xz
+
+deb: man
+	checkinstall -y --install=no \
+	--pkgname=snapman \
+	--pkgversion=0.9b \
+	--pkgarch=all \
+	--pkgrelease=1 \
+	--pkglicense=GPLv3+ \
+	--pkggroup=retrosmart \
+	--pkgsource=https://github.com/mdomlop/snapman/archive/0.9b.tar.gz \
+	--pkgaltsource=https://github.com/mdomlop/snapman/archive/0.9b.zip \
+	--maintainer=mdomlop@gmail.com \
+	--provides=snapman \
+	--requires="python3 \(\>= 3.5\),btrfs-progs \(\>=4.7\)" \
+	--conflicts=snapman-git \
+	--nodoc

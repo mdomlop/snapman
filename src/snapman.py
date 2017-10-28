@@ -81,22 +81,17 @@ class Section():
     def snapshot_count(self):
         return(len(self.snapshot_list()))
 
-    def newer_snapshot(self):
+    def newer_snapshot(self, fullpath=True):
         if self.snapshot_count():
-            return(self.snapshot_list()[-1])
+            return(self.snapshot_list(fullpath)[-1])
         else:
             return('')
 
-    def older_snapshot(self):
+    def older_snapshot(self, fullpath=True):
         if self.snapshot_count():
-            return(self.snapshot_list()[0])
+            return(self.snapshot_list(fullpath)[0])
         else:
             return('')
-    def path_older_snapshot(self):
-        return(os.path.join(self.name, self.older_snapshot()))
-
-    def path_newer_snapshot(self):
-        return(os.path.join(self.name, self.newer_snapshot()))
 
     def quota_diff(self):
         return(self.snapshot_count() - self.quota)
@@ -142,7 +137,7 @@ class Section():
         quota_diff = self.quota_diff()
         if quota_diff > 0:
             for i in range(quota_diff):  # 0..quota_diff - 1
-                self.delete(self.path_older_snapshot())
+                self.delete(self.older_snapshot())
 
     def makesnapshot(self):
         try:
@@ -158,10 +153,10 @@ class Section():
             self.write()
         else:
             # Make a copy if newer copy is older than minage.
-            diff = self.ts(self.now()) - self.ts(self.newer_snapshot())
+            diff = self.ts(self.now()) - self.ts(self.newer_snapshot(False))
             if diff > self.frequency:
                 if self.quota_diff() == 0:  # Make room for a new snapshot.
-                    self.delete(self.path_older_snapshot())
+                    self.delete(self.older_snapshot())
                 self.write()
 
     def start(self):
