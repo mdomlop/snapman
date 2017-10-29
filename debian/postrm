@@ -21,6 +21,7 @@ set -e
 
 case "$1" in
     upgrade|abort-upgrade)
+    echo "Reloading daemons..."
     systemctl daemon-reload
     if systemctl is-active snapman > /dev/null
     then
