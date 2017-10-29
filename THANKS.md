@@ -1,0 +1,5 @@
+THANKS
+------
+
+Many thanks to all GNU/Open Source community and special thanks to you for use
+my program.
