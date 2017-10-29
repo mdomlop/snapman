@@ -352,8 +352,6 @@ frequency = 1d
 quota = 30
 # Set to True for a readonly snapshot, otherwise set to False:
 readonly = True
-# Set to True for enable snapshotting, otherwise set to False:
-enabled = True
 
 [/.snapshots]
 # Snapshots of root directory at /.snapshots with default frequency and quota.

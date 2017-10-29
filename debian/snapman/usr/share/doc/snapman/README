@@ -21,6 +21,12 @@ Snapman accepts command-line options to manage snapshots.
 
 For futher details, read the included documentation:
 
+- [INSTALL](INSTALL.md), for install instructions.
+
+- [FAQ](FAQ.md), for Frequently Asked Questions.
+
+- [NEWS](NEWS.md), for some news or changes in the application.
+
 - [Snapman manual](man/en/snapman.1.md), for the manual.
 
 - [Configuration manual](man/en/snapman.5.md), for the manual of configuration

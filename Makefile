@@ -1,10 +1,10 @@
 PREFIX='/usr'
 DESTDIR=''
 TEMPDIR := $(shell mktemp -u --suffix .snapman)
-DOCS = AUTHORS BUGS ChangeLog FAQ INSTALL NEWS README THANKS TODO
+DOCS = README INSTALL USAGE
 VERSION = 0.9a
 
-default: man markdown
+default: man README.md
 
 man: snapman.1.gz snapman.5.gz
 
@@ -13,6 +13,9 @@ snapman.1.gz: man/en/snapman.1.md
 
 snapman.5.gz: man/en/snapman.5.md
 	pandoc $^ -s -t man |  gzip -c > $@
+
+README.md:
+	cat $(DOCS) > $@
 
 install: $(DOCS)
 	install -d -m 755 $(DESTDIR)$(PREFIX)/share/doc/snapman
@@ -37,27 +40,6 @@ uninstall:
 clean:
 	rm -rf *.xz *.md *.gz *.tgz *.deb /tmp/tmp.*.snapman
 
-AUTHORS.md: AUTHORS
-	cp $^ $@
-BUGS.md: BUGS
-	cp $^ $@
-ChangeLog.md: ChangeLog
-	cp $^ $@
-FAQ.md: FAQ
-	cp $^ $@
-INSTALL.md: INSTALL
-	cp $^ $@
-NEWS.md: NEWS
-	cp $^ $@
-README.md: README
-	cp $^ $@
-THANKS.md: THANKS
-	cp $^ $@
-TODO.md: TODO
-	cp $^ $@
-
-markdown: AUTHORS.md BUGS.md ChangeLog.md FAQ.md INSTALL.md NEWS.md README.md THANKS.md TODO.md
-
 pkg:
 	mkdir $(TEMPDIR)
 	tar cf $(TEMPDIR)/snapman.tar ../snapman
@@ -79,4 +61,4 @@ deb: deb_clean
 	@echo Package done!
 	@echo You can install it as root with:
 	@echo dpkg -i snapman_$(VERSION)_all.deb
-	
+
