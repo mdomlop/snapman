@@ -146,7 +146,7 @@ class Section():
 
     def makesnapshot(self):
         # Only do actions if enabled property is on:
-        if not self.enabledd:
+        if not self.enabled:
             if args.verbose:
                 print('WARNING: Section', self.name, 'is disabled',
                       file=sys.stderr)
