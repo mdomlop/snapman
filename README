@@ -19,6 +19,24 @@ in the configuration file (in the easy `.ini` format).
 
 Snapman accepts command-line options to manage snapshots.
 
-For futher details about the configuration, installation or other features you
-can read the included manual.
+For futher details, read the included documentation:
 
+- [INSTALL](INSTALL.html), for install instructions.
+
+- [FAQ](FAQ.html), for Frequently Asked Questions.
+
+- [NEWS](NEWS.html), for some news or changes in the application.
+
+- [Snapman manual](man/en/snapman.1.md), for the manual.
+
+- [Configuration manual](man/en/snapman.5.md), for the manual of configuration
+    file syntax.
+
+When the program is installed, all the documentation are available at
+`/usr/share/doc/snapman`. And the manuals with:
+
+        man snapman
+
+And, for configuration file syntax:
+
+        man 5 snapman
