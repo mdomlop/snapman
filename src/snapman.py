@@ -65,7 +65,7 @@ class Section():
                 print(i, '=', settings[self.name][i])
 
     def percent(self):
-        return(round(int(self.snapshot_count()) * 100 / self.quota / 2))
+        return(round(int(self.snapshot_count()) * 100 / self.quota))
 
     def info(self):
         total_s = str(self.snapshot_count())
