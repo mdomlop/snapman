@@ -7,9 +7,4 @@ TODO
 - Make rpm package.
 - Write rollback function.
 - Send snapshots out of the pool.
-- Edit/Create sections on the fly. Maybe reloading config file every time?
-    Example ideas:
-    - --edit section --frequency 30m --quota 2 --subvolume /home --readonly --disable
-    - --delete section
-    - --disable section
     

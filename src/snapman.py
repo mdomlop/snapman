@@ -28,10 +28,11 @@ class Section():
     def __init__(self, name):
         if name in settings.sections():
             self.subvolume = settings[name]['subvolume']
-            self.frequency_prop = settings[name]['frequency']
-            self.frequency = toseconds(self.frequency_prop)
+            self.frequency = settings[name]['frequency']
+            self.frequency_sec = toseconds(self.frequency)
             self.quota = settings[name].getint('quota')
             self.readonly = settings[name].getboolean('readonly')
+            self.enabled = settings[name].getboolean('enable')
         else:
             clean_exit('Section not found: ' + name, 8)
 
@@ -51,18 +52,21 @@ class Section():
     def print_snapshots(self, path=True):
         for i in self.snapshot_list():
             print(i)
-            
-    def print_properties(self):
-        if args.verbose:
+
+    def print_properties(self, title=False, explicity=False):
+        props = ('subvolume', 'frequency', 'quota', 'readonly', 'enabled')
+        if title:
             print('[' + self.name + ']')
-        print('subvolume =', self.subvolume + '\n' +
-              'frequency =', self.frequency_prop + '\n' +
-              'quota =', str(self.quota) + '\n' +
-              'readonly =', self.readonly)
+        for i in props:
+            if explicity:
+                if settings['DEFAULT'][i] != settings[self.name][i]:
+                    print(i, '=', settings[self.name][i])
+            else:
+                print(i, '=', settings[self.name][i])
 
     def percent(self):
         return(round(int(self.snapshot_count()) * 100 / self.quota / 2))
-    
+
     def info(self):
         total_s = str(self.snapshot_count())
         newer_s = self.newer_snapshot()
@@ -75,7 +79,8 @@ class Section():
             '\nSnapshots:', total_s + '/' + str(self.quota) +
             '\nQuota:', qperc + '%' +
             '\nNewer:', newer_s +
-            '\nOlder:', older_s
+            '\nOlder:', older_s +
+            '\nEnabled:', self.enabled
             )
 
     def snapshot_count(self):
@@ -140,11 +145,17 @@ class Section():
                 self.delete(self.older_snapshot())
 
     def makesnapshot(self):
+        # Only do actions if enabled property is on:
+        if not self.enabledd:
+            if args.verbose:
+                print('WARNING: Section', self.name, 'is disabled',
+                      file=sys.stderr)
+            return(0)
         try:
             if not os.path.isdir(self.name):
                 cmd = ('btrfs', 'subvolume', 'create', self.name)
                 subprocess.call(cmd, stdout=DEVNULL)
-                #os.makedirs(self.name, exist_ok=True)
+                # os.makedirs(self.name, exist_ok=True)
         except PermissionError:
             clean_exit('ERROR: I can not create the directory: ' +
                        self.name, 5)
@@ -154,7 +165,7 @@ class Section():
         else:
             # Make a copy if newer copy is older than minage.
             diff = self.ts(self.now()) - self.ts(self.newer_snapshot(False))
-            if diff > self.frequency:
+            if diff > self.frequency_sec:
                 if self.quota_diff() == 0:  # Make room for a new snapshot.
                     self.delete(self.older_snapshot())
                 self.write()
@@ -162,7 +173,7 @@ class Section():
     def start(self):
         while True:
             self.makesnapshot()
-            time.sleep(self.frequency)
+            time.sleep(self.frequency_sec)
 
     def daemonize(self):
         threading.Thread(target=self.start).start()
@@ -221,33 +232,33 @@ def parseargs():
                         help='Execute in daemon mode')
     parser.add_argument('-v', '--verbose', default=False, action='store_true',
                         help='Set verbosity on if available')
-    
+
     parser.add_argument('--sections', default=False, action='store_true',
-                        help='Show the managed sections')
+                        help='List managed sections')
     parser.add_argument('--section-snapshots', default=None,
-                        help='Show the list of snapshots taked from the section')
+                        help='List of snapshots taked from the section')
     parser.add_argument('--section-clean', default=None,
                         help='Delete all snapshots taked from the section')
     parser.add_argument('--section-info', default=None,
                         help='Show some information about the section status')
     parser.add_argument('--section-properties', default=None,
-                        help='Print out the properties configured for the section')
-    
+                        help='Print the properties configured for the section')
+
     parser.add_argument('--subvolumes', default=False, action='store_true',
-                        help='Show a list of all subvolumes managed by configuration file')
+                        help='List subvolumes managed by configuration file')
     parser.add_argument('--subvolume-snapshots', default=None,
-                        help='Show a list of all snapshots taked from the given subvolume')
+                        help='List snapshots taked from the given subvolume')
     parser.add_argument('--subvolume-sections', default=None,
-                        help='Show a list of all sections which manage the given subvolume')
+                        help='List sections which manage the given subvolume')
     parser.add_argument('--subvolume-clean', default=None,
                         help='Delete all snapshots taked from given subvolume')
     parser.add_argument('--subvolume-info', default=None,
-                        help='Show some information about the subvolume status')
+                        help='Show information about the subvolume status')
 
     parser.add_argument('--snapshots', default=False, action='store_true',
-                        help='Show a list of all subvolumes taked')    
+                        help='Show a list of all subvolumes taked')
     parser.add_argument('--snapshot-info', default=None,
-                        help='Show some information about the snapshot status')
+                        help='Show information about the snapshot status')
 
     if not os.path.exists(parser.parse_args().configfile):
         clean_exit('ERROR: I can not find the configuration file.', 1)
@@ -255,7 +266,7 @@ def parseargs():
     return(parser.parse_args())
 
 
-def get_settings(args):
+def get_settings():
     ''' Get settings from config file. Overwrited by command line options. '''
     # FIXME: Need to validate settings
     settings = configparser.ConfigParser()
@@ -295,13 +306,13 @@ def clean_exit(text=None, exitnum=0):
     sys.exit(exitnum)
 
 
-def daemon(settings):
+def daemon():
     for i in settings.sections():
         x = Section(i)
         x.daemonize()
 
 
-def run_once(settings):
+def run_once():
     for i in settings.sections():
         x = Section(i)
         x.makesnapshot()
@@ -312,7 +323,7 @@ def main():
     global args
 
     args = parseargs()
-    settings = get_settings(args)
+    settings = get_settings()
 
     if args.pidfile:
         PID = os.getpid()
@@ -355,8 +366,8 @@ readonly = False
 [/home/user/Recent]
 # Writables snapshots of a user home directory every 5 minutes. Until the
 # last half hour.
-# Useful, among other things, to cheat the mincraft game. To do this 
-while gaming if you die: 
+# Useful, among other things, to cheat the mincraft game. To do this
+while gaming if you die:
 # 1. Save and Quit to Title
 # 2. Open a terminal and write:
 # rsync -aHv --delete ~/Recent/backup of 5m ago/.minecraft/ ~/.minecraft/
@@ -403,8 +414,11 @@ readonly = False
     elif args.section_properties:
         s = args.section_properties.rstrip('/')
         x = Section(s)
-        x.print_properties()
-        
+        if args.verbose:
+            x.print_properties(True)
+        else:
+            x.print_properties()
+
     elif args.subvolumes:
         l = []
         for s in settings.sections():
@@ -466,7 +480,7 @@ readonly = False
 
         found = False
         snap = []
-        sect = []                
+        sect = []
 
         for i in settings.sections():
             if sub == settings[i]['subvolume']:

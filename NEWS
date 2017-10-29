@@ -1,6 +1,11 @@
 NEWS
 ----
 
+201710170712:
+
+    - Added enabled property to sections in configuration file. If yoy switch
+    off such property, you will turn off snapshotting in that section.
+
 201710281259:
 
     - Debian packaging.
@@ -15,5 +20,5 @@ NEWS
 
 201709100845:
 
-    - The application is now called Snapman. I liked Timemachine, but Apple 
+    - The application is now called Snapman. I liked Timemachine, but Apple
     came up with it first.

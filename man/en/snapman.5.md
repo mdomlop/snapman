@@ -85,9 +85,21 @@ simplify in minutes: 75m.
 **readonly**
 :    Set in `True` for a readonly snapshot, `False` for a writable one.
 
+**enabled**
+:    Set in `True` for enable snapshotting, `False` for disabling.
+
 
 # EXAMPLES
 
+        [DEFAULT]
+        subvolume = /
+        frequency = 1d
+        quota = 30
+        readonly = True
+        enabled = True
+
+        [/backups/OS]
+        
         [/data/snapman/movies]
         subvolume = /data/movies
         frequency = 7d
@@ -96,21 +108,24 @@ simplify in minutes: 75m.
 
         [/data/snapman/music]
         subvolume = /data/music
-        frequency = 1d
         quota = 10
-        readonly = True
 
         [/data/snapman/documents/daily]
         subvolume = /data/documents
         frequency = 1h
         quota = 24
-        readonly = True
 
-        [/data/snapman/documents/20min]
+        [/data/snapman/documents/last20min]
         subvolume = /data/documents
         frequency = 5m
         quota = 4
-        readonly = True
+       
+        [/data/snapman/documents/5min]
+        subvolume = /data/documents
+        frequency = 1m
+        quota = 5
+        enabled = False
+       
 
 
 # BUGS
