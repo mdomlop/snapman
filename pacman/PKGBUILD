@@ -21,7 +21,6 @@ provides=($_gitname)
 
 build() {
     cd "${srcdir}/${_gitname}"
-    ./configure
     make
     }
 
