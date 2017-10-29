@@ -32,7 +32,7 @@ class Section():
             self.frequency_sec = toseconds(self.frequency)
             self.quota = settings[name].getint('quota')
             self.readonly = settings[name].getboolean('readonly')
-            self.enabled = settings[name].getboolean('enable')
+            self.enabled = settings[name].getboolean('enabled')
         else:
             clean_exit('Section not found: ' + name, 8)
 
