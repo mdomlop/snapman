@@ -530,9 +530,9 @@ readonly = False
             clean_exit('No section manages the subvolume: ' + snap, 6)
 
     elif args.daemon:
-        daemon()
+        daemon(settings)
     else:
-        run_once()
+        run_once(settings)
 
 
 if __name__ == '__main__':

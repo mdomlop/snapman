@@ -1,0 +1,4 @@
+KNOWN BUGS
+----------
+
+- Probably. If you found any let me know, please.

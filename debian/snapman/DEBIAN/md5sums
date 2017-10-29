@@ -1,0 +1,17 @@
+c775552228e20f0289f61236d4a6d364  lib/systemd/system/snapman.service
+cadb32ae1996d88763900ebc06e9f54e  usr/bin/snapman
+2bcdab88c6f6442f45328cab98702c16  usr/share/doc/snapman/AUTHORS
+9b21c6b9c6db9cfe9510c7a534dc3da5  usr/share/doc/snapman/BUGS
+94728bdddcbec69fc1320dee1c0d7d14  usr/share/doc/snapman/ChangeLog
+15696f71d1f9b60ad10571ee9aecb379  usr/share/doc/snapman/FAQ
+1db7fcb740ee34a5f6df3a2c638fb788  usr/share/doc/snapman/INSTALL
+b423917e52994ae5e5bac0cf3ac136fd  usr/share/doc/snapman/NEWS.gz
+01db11a0f4d42b96a7b2d5e0c6f2d97b  usr/share/doc/snapman/README
+af9f2934b91bea67272284f5470bff74  usr/share/doc/snapman/README.Debian
+0109ce0a81d353e0923ebe470babad93  usr/share/doc/snapman/THANKS
+93983011c412ce7cf6e7054bc0dd30da  usr/share/doc/snapman/TODO
+853e4c6438f1bf443cbb2abc2a2eec11  usr/share/doc/snapman/changelog.gz
+fdc5e411d8a4ade5c6fef30a25fc0c0b  usr/share/doc/snapman/copyright
+7702f203b58979ebbc31bfaeb44f219c  usr/share/licenses/snapman/COPYING
+ab300f191ffe74f1c1a7ac1772bad73b  usr/share/man/man1/snapman.1.gz
+fcab9addde4309eb1e799ab50b097039  usr/share/man/man5/snapman.5.gz
