@@ -1,0 +1,10 @@
+[Unit]
+Description=Snapman backup system
+
+[Service]
+Type=simple
+PIDFile=/run/snapman.pid
+ExecStart=/usr/bin/python3 /usr/bin/snapman --daemon --pidfile /run/snapman.pid
+
+[Install]
+WantedBy=multi-user.target

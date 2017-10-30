@@ -2,8 +2,8 @@ Usage
 -----
 
 First of all edit the configuration file at `/etc/snapman.ini`. A default one is
-supplied as example. Alternatively you can use the `--sample` command line
-option to generate one:
+supplied as example. Alternatively you use the `--sample` command line option to
+generate one:
 
         # snapman --sample > /etc/snapman.ini
 

@@ -1,0 +1,14 @@
+Package: snapman
+Version: 0.9a
+Architecture: all
+Maintainer: Manuel Domínguez López <mdomlop@gmail.com>
+Installed-Size: 92
+Depends: python3 (>= 3.5), btrfs-progs (>= 4.7)
+Conflicts: snapman-git
+Provides: snapman
+Section: admin
+Priority: optional
+Homepage: https://github.com/mdomlop/snapman
+Description: A Btrfs based backup program
+ A backup program based on CoW filesystem capatibilities.
+ Currently only supports Btrfs.
