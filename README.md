@@ -178,6 +178,7 @@ To show additional information when performing actions use `--verbose` option.
 
 There are more command line options. Please refer to `man snapman` to complete
 and updated guide.
+
 FREQUENTLY ASKED QUESTIONS
 --------------------------
 
