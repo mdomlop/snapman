@@ -134,6 +134,24 @@ Usually `/run/snapman.pid`.
 :    Snapshots stored in disk have a name in a format that not match with 
 `%Y-%m-%d %H:%M:%S` format.
 
+**4**
+:    The root directory is not a snapshot!.
+
+**5**
+:    Failed to create a directory.
+
+**6**
+:    The specified subolume is not in any section.
+
+**7**
+:    The program failed to open configuration file.
+
+**8**
+:    Section not found.
+
+**9**
+:    Timestamp with wrong format.
+
 **130**
 :    `KeyboardInterrupt` signal received.
     

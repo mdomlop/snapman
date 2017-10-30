@@ -390,12 +390,10 @@ readonly = False
         else:
             for i in settings.sections():
                 x = Section(i)
-                n = x.name
-                c = str(x.snapshot_count())
-                t = str(x.quota)
                 r = 'readonly' if x.readonly else 'writable'
-                s = x.subvolume
-                print(n + ':', c + '/' + t, r, 'from', s)
+                print(x.name + ':', 
+                      str(x.snapshot_count()) + '/' + str(x.quota), 
+                      r, 'from', x.subvolume)
     elif args.section_snapshots:
         s = args.section_snapshots.rstrip('/')
         x = Section(s)
@@ -520,7 +518,7 @@ readonly = False
         if snap != '/':  # Prevent strip filesystem root.
             snap = snap.rstrip('/')
         else:
-            clean_exit("Root directory can't be a snapshot!", 7)
+            clean_exit("Root directory can't be a snapshot!", 4)
         found = False
         for i in settings.sections():
                 x = Section(i)
