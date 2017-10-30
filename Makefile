@@ -38,7 +38,7 @@ uninstall:
 	rm -rf $(PREFIX)/share/doc/snapman/
 
 clean:
-	rm -rf *.xz *.md *.gz *.tgz *.deb /tmp/tmp.*.snapman
+	rm -rf *.xz *.md *.gz *.tgz *.deb /tmp/tmp.*.snapman debian/changelog debian/README debian/files debian/snapman debian/debhelper-build-stamp debian/snapman*
 
 pkg:
 	mkdir $(TEMPDIR)
@@ -50,12 +50,11 @@ pkg:
 	@echo You can install it as root with:
 	@echo pacman -U snapman-*.pkg.tar.xz
 
-deb_clean:
-	fakeroot debian/rules clean
-
-deb: deb_clean
+deb:
+	cp README debian/README
 	cp ChangeLog debian/changelog
-	fakeroot debian/rules build
+	#fakeroot debian/rules clean
+	#fakeroot debian/rules build
 	fakeroot debian/rules binary
 	mv ../snapman_$(VERSION)_all.deb .
 	@echo Package done!

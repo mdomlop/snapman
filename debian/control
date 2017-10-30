@@ -2,16 +2,15 @@ Source: snapman
 Section: admin
 Priority: optional
 Maintainer: Manuel Domínguez López <mdomlop@gmail.com>
-Build-Depends: debhelper (>= 9)
+Build-Depends: debhelper (>= 9), pandoc
 Standards-Version: 3.9.8
 Homepage: https://github.com/mdomlop/snapman
 
 Package: snapman
-#Version: 0.9a
 Architecture: all
 Provides: snapman
 Conflicts: snapman-git
-Depends: python3 (>= 3.5),btrfs-progs (>= 4.7)
+Depends: python3 (>= 3.5), btrfs-progs (>= 4.7)
 Description: A Btrfs based backup program
  A backup program based on CoW filesystem capatibilities.
  Currently only supports Btrfs.
