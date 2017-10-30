@@ -9,10 +9,10 @@ default: man README.md
 man: snapman.1.gz snapman.5.gz
 
 snapman.1.gz: man/en/snapman.1.md
-	pandoc $^ -s -t man |  gzip -c > $@
+	pandoc $^ -s -t man | gzip -c > $@
 
 snapman.5.gz: man/en/snapman.5.md
-	pandoc $^ -s -t man |  gzip -c > $@
+	pandoc $^ -s -t man | gzip -c > $@
 
 README.md:
 	cat $(DOCS) > $@
@@ -27,6 +27,17 @@ install: $(DOCS)
 	install -Dm 644 LICENSE $(DESTDIR)$(PREFIX)/share/licenses/snapman/COPYING
 	install -Dm 644 snapman.1.gz $(DESTDIR)$(PREFIX)/share/man/man1/snapman.1.gz
 	install -Dm 644 snapman.5.gz $(DESTDIR)$(PREFIX)/share/man/man5/snapman.5.gz
+
+arch_install: $(DOCS)
+	install -d -m 755 $(DESTDIR)$(PREFIX)/share/doc/snapman
+	install -Dm 644 $^ $(DESTDIR)$(PREFIX)/share/doc/snapman
+	install -Dm 755 src/snapman.py $(DESTDIR)$(PREFIX)/bin/snapman
+	install -Dm 644 src/snapman.ini $(DESTDIR)/etc/snapman.ini
+	install -d -m 755 $(DESTDIR)$(PREFIX)/share/licenses/snapman
+	install -Dm 644 LICENSE $(DESTDIR)$(PREFIX)/share/licenses/snapman/COPYING
+	install -Dm 644 snapman.1.gz $(DESTDIR)$(PREFIX)/share/man/man1/snapman.1.gz
+	install -Dm 644 snapman.5.gz $(DESTDIR)$(PREFIX)/share/man/man5/snapman.5.gz
+	install -Dm 644 src/snapman.service $(DESTDIR)$(PREFIX)/lib/systemd/system/snapman.service
 
 uninstall:
 	rm -f $(PREFIX)/bin/snapman

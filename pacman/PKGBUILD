@@ -26,5 +26,5 @@ build() {
 
 package() {
     cd "${srcdir}/${_gitname}"
-    make install DESTDIR=${pkgdir}
+    make arch_install DESTDIR=${pkgdir}
 }
