@@ -68,18 +68,14 @@ class Section():
         return(round(int(self.snapshot_count()) * 100 / self.quota))
 
     def info(self):
-        total_s = str(self.snapshot_count())
-        newer_s = self.newer_snapshot()
-        older_s = self.older_snapshot()
-        qperc = str(self.percent())
         if args.verbose:
             print('Section:', self.name)
         print(
             'From:', self.subvolume +
-            '\nSnapshots:', total_s + '/' + str(self.quota) +
-            '\nQuota:', qperc + '%' +
-            '\nNewer:', newer_s +
-            '\nOlder:', older_s +
+            '\nSnapshots:', str(self.snapshot_count()) + '/' + str(self.quota) +
+            '\nQuota:', str(self.percent()) + '%' +
+            '\nNewer:', self.newer_snapshot() +
+            '\nOlder:', self.older_snapshot() +
             '\nEnabled:', self.enabled
             )
 
@@ -153,9 +149,11 @@ class Section():
             return(0)
         try:
             if not os.path.isdir(self.name):
+                dirname = os.path.dirname(self.name)
+                if not os.path.isdir(dirname):
+                    os.makedirs(dirname, exist_ok=True)
                 cmd = ('btrfs', 'subvolume', 'create', self.name)
                 subprocess.call(cmd, stdout=DEVNULL)
-                # os.makedirs(self.name, exist_ok=True)
         except PermissionError:
             clean_exit('ERROR: I can not create the directory: ' +
                        self.name, 5)
@@ -268,12 +266,10 @@ def parseargs():
 
 def get_settings():
     ''' Get settings from config file. Overwrited by command line options. '''
-    # FIXME: Need to validate settings
     settings = configparser.ConfigParser()
-    # Get settings from args.configfile.
     settings.read(args.configfile)
 
-    # For warnings if troubles with the config file:
+    # Exit if there are troubles with the configuration file:
     try:
         f = open(args.configfile, "r")
     except IsADirectoryError:
@@ -391,8 +387,8 @@ readonly = False
             for i in settings.sections():
                 x = Section(i)
                 r = 'readonly' if x.readonly else 'writable'
-                print(x.name + ':', 
-                      str(x.snapshot_count()) + '/' + str(x.quota), 
+                print(x.name + ':',
+                      str(x.snapshot_count()) + '/' + str(x.quota),
                       r, 'from', x.subvolume)
     elif args.section_snapshots:
         s = args.section_snapshots.rstrip('/')
@@ -481,13 +477,13 @@ readonly = False
         found = False
         snap = []
         sect = []
-
         for i in settings.sections():
             if sub == settings[i]['subvolume']:
                 found = True
                 x = Section(i)
                 snap += x.snapshot_list()
                 sect.append(x.name)
+
         if not found:
             clean_exit('No section manages the subvolume: ' + sub, 6)
         if snap:
