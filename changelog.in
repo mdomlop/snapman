@@ -4,7 +4,9 @@ snapman (0.9b) unstable; urgency=medium
     + Cosmetic fixes.
     + Debian and Arch linux packaging.
 
- -- Manuel Domínguez López <mdomlop@gmail.com>  Sat, 30 Oct 2017 13:28:10 +0100
+ -- Manuel Domínguez López <mdomlop@gmail.com>  Mon, 30 Oct 2017 13:28:10 +0100
+
+snapman (0.9a) unstable; urgency=medium
 
   * Release 0.9a.
     + Renamed project to Snapman.

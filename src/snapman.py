@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 
-"""
-Snapman
-=======
+PROGRAM_NAME = 'snapman'
+DESCRIPTION = 'Create and manage filesystem snapshots'
+VERSION='0.9.1b'
+AUTHOR = 'Manuel Domínguez López'  # See AUTHORS file
+MAIL = 'mdomlop@gmail.com'
+LICENSE = 'GPLv3+'  # Read LICENSE file.
 
-Create snapshots using BTRFS' snapshot facilities.
-
-AUTHORS: Manuel Domínguez López. See AUTHORS file.
-
-LICENSE: GPLv3+. Read LICENSE file.
-
-"""
 
 import os
 import time
@@ -21,7 +17,6 @@ from subprocess import DEVNULL
 import configparser  # for parse config file
 import argparse
 import threading
-
 
 class Section():
     ''' The Section class represents a individual section in config file. '''
@@ -216,8 +211,8 @@ def parseargs():
     pidfile = None  # Writes pidfile.
 
     parser = argparse.ArgumentParser(
-            prog='snapman',
-            description='A Btrfs snapshots manager'
+            prog=PROGRAM_NAME,
+            description=DESCRIPTION
             )
 
     parser.add_argument('-c', '--configfile', default=configfile,
@@ -230,6 +225,9 @@ def parseargs():
                         help='Execute in daemon mode')
     parser.add_argument('-v', '--verbose', default=False, action='store_true',
                         help='Set verbosity on if available')
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s ' + VERSION,
+                        help='Show program version and exit')
 
     parser.add_argument('--sections', default=False, action='store_true',
                         help='List managed sections')

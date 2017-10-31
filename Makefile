@@ -1,10 +1,17 @@
-PREFIX='/usr'
-DESTDIR=''
+PREFIX = '/usr'
+DESTDIR = ''
 TEMPDIR := $(shell mktemp -u --suffix .snapman)
 DOCS = README INSTALL USAGE FAQ
-VERSION = 0.9b
+PROGRAM_NAME := $(shell grep ^PROGRAM_NAME src/snapman.py | cut -d\' -f2)
+DESCRIPTION := $(shell grep ^DESCRIPTION src/snapman.py | cut -d\' -f2)
+VERSION := $(shell grep ^VERSION src/snapman.py | cut -d\' -f2)
+AUTHOR := $(shell grep ^AUTHOR src/snapman.py | cut -d\' -f2)
+MAIL := $(shell grep ^MAIL src/snapman.py | cut -d\' -f2)
+LICENSE := $(shell grep ^LICENSE src/snapman.py | cut -d\' -f2)
+TIMESTAMP = $(shell LC_ALL=C date '+%a, %d %b %Y %T %z')
 
-default: man README.md
+
+documents: man README.md ChangeLog
 
 man: snapman.1.gz snapman.5.gz
 
@@ -16,6 +23,15 @@ snapman.5.gz: man/en/snapman.5.md
 
 README.md:
 	cat $(DOCS) > $@
+
+ChangeLog: changelog.in
+	@echo "$(PROGRAM_NAME) ($(VERSION)) unstable; urgency=medium" > $@
+	@echo >> $@
+	@echo "  * Git build." >> $@
+	@echo >> $@
+	@echo " -- $(AUTHOR) <$(MAIL)>  $(TIMESTAMP)" >> $@
+	@echo >> $@
+	@cat $^ >> $@
 
 install: $(DOCS)
 	install -d -m 755 $(DESTDIR)$(PREFIX)/share/doc/snapman
@@ -49,19 +65,19 @@ uninstall:
 	rm -rf $(PREFIX)/share/doc/snapman/
 
 clean:
-	rm -rf *.xz *.md *.gz *.tgz *.deb /tmp/tmp.*.snapman debian/changelog debian/README debian/files debian/snapman debian/debhelper-build-stamp debian/snapman*
+	rm -rf *.xz *.md *.gz *.tgz *.deb ChangeLog /tmp/tmp.*.snapman debian/changelog debian/README debian/files debian/snapman debian/debhelper-build-stamp debian/snapman*
 
 pkg:
 	mkdir $(TEMPDIR)
 	tar cf $(TEMPDIR)/snapman.tar ../snapman
 	cp pacman/* ChangeLog $(TEMPDIR)/
 	cd $(TEMPDIR); makepkg
-	cp $(TEMPDIR)/snapman-*.pkg.tar.xz .
+	cp $(TEMPDIR)/snapman-git-local-1-any.pkg.tar.xz .
 	@echo Package done!
 	@echo You can install it as root with:
-	@echo pacman -U snapman-*.pkg.tar.xz
+	@echo pacman -U snapman-git-local-1-any.pkg.tar.xz
 
-deb:
+deb: man ChangeLog
 	cp README debian/README
 	cp ChangeLog debian/changelog
 	#fakeroot debian/rules clean
