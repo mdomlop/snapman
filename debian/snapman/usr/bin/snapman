@@ -363,9 +363,6 @@ quota = 30
 readonly = True
 # Set to True for enable snapshotting, otherwise set to False:
 enabled = True
-# Set the timestamp format.
-# See https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
-timestamp = %Y%m%d-%H%M%S
 
 [/.snapshots]
 # Snapshots of root directory at /.snapshots with default frequency and quota.

@@ -1,0 +1,11 @@
+c775552228e20f0289f61236d4a6d364  lib/systemd/system/snapman.service
+2fcd6194bcbfdf607717f16d3bca8ec9  usr/bin/snapman
+15696f71d1f9b60ad10571ee9aecb379  usr/share/doc/snapman/FAQ
+2585ffa5a4a2b119c4e953899250939f  usr/share/doc/snapman/INSTALL
+53fd148a32bd9f316c01dbda6ef526fb  usr/share/doc/snapman/README
+6f9256f9f4227abd3235e75ec791c3fb  usr/share/doc/snapman/USAGE
+3709f61a60b4fa6dc2f24475e3c87d36  usr/share/doc/snapman/changelog.gz
+fdc5e411d8a4ade5c6fef30a25fc0c0b  usr/share/doc/snapman/copyright
+7702f203b58979ebbc31bfaeb44f219c  usr/share/licenses/snapman/COPYING
+bf911a4b23b4962c134562f5d402c15f  usr/share/man/man1/snapman.1.gz
+275a1dd8c165b70464b38eaa48d48e8f  usr/share/man/man5/snapman.5.gz

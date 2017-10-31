@@ -24,7 +24,6 @@ filesystem and the `/home` directory.
         quota = 30
         readonly = True
         enabled = True
-        timestamp = %Y%m%d-%H%M%S
 
         [/snapshots]
 
@@ -58,10 +57,6 @@ the older snapshot will be deleted and a new one will be created.
 The `readonly` option makes readonly snapshots and the `enabled` option allows
 to disable this section, without delete snapshots. Both options accept boolean
 values: True, False, 0, 1, on, off.
-
-The `timestamp` option is the name of snapshot.
-See <https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior>
-for a complete documentation of this format.
 
 Rather than executing manually every certain time, we can use the `--daemon`
 command line option:
