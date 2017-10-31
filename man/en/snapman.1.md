@@ -71,9 +71,12 @@ execution performing snapshots when necessary.
 :    Set verbosity on. This option shows additional information in the command 
 output if available.
 
-**--pidfile**=[*file*]:
+**--pidfile**=[*file*]
 :    Write the PID of the program to *file*. *file* must be a full path. 
 Usually `/run/snapman.pid`.
+
+**--version**
+:    Show program version and exit.
 
 
 ## Section related options
