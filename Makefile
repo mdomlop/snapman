@@ -65,7 +65,7 @@ uninstall:
 	rm -rf $(PREFIX)/share/doc/snapman/
 
 clean:
-	rm -rf *.xz *.md *.gz *.tgz *.deb ChangeLog /tmp/tmp.*.snapman debian/changelog debian/README debian/files debian/snapman debian/debhelper-build-stamp debian/snapman*
+	rm -rf *.xz *.md *.gz *.tgz *.deb *.rpm ChangeLog /tmp/tmp.*.snapman debian/changelog debian/README debian/files debian/snapman debian/debhelper-build-stamp debian/snapman*
 
 pkg:
 	mkdir $(TEMPDIR)
