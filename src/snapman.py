@@ -376,6 +376,7 @@ subvolume = /home/user
 frequency = 1h
 quota = 24
 readonly = False
+timestamp = %Y%m%d-%H%M%S
 
 [/home/user/Recent]
 # Writables snapshots of a user home directory every 5 minutes. Until the

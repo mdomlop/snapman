@@ -100,6 +100,7 @@ See <https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior>
         quota = 30
         readonly = True
         enabled = True
+        timestamp = %Y%m%d-%H%M%S
 
         [/backups/OS]
         
