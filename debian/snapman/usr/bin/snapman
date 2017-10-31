@@ -1,23 +1,22 @@
 #!/usr/bin/env python3
 
+PROGRAM_NAME = 'snapman'
+DESCRIPTION = 'Create and manage filesystem snapshots'
+VERSION='0.9.1b'
+AUTHOR = 'Manuel Domínguez López'  # See AUTHORS file
+MAIL = 'mdomlop@gmail.com'
+LICENSE = 'GPLv3+'  # Read LICENSE file.
+
+
 import os
 import time
 import datetime
 import sys  # only for sys.stderr
 import subprocess
 from subprocess import DEVNULL
-import configparser
+import configparser  # for parse config file
 import argparse
 import threading
-
-
-PROGRAM_NAME = 'snapman'
-DESCRIPTION = 'Create and manage filesystem snapshots'
-VERSION = '0.9.1b'
-AUTHOR = 'Manuel Domínguez López'  # See AUTHORS file
-MAIL = 'mdomlop@gmail.com'
-LICENSE = 'GPLv3+'  # Read LICENSE file.
-
 
 class Section():
     ''' The Section class represents a individual section in config file. '''
@@ -29,7 +28,7 @@ class Section():
             self.quota = settings[name].getint('quota')
             self.readonly = settings[name].getboolean('readonly')
             self.enabled = settings[name].getboolean('enabled')
-            self.timestamp = settings[name]['timestamp']
+            self.sformat = settings[name]['timestamp']
         else:
             clean_exit('Section not found: ' + name, 8)
 
@@ -68,10 +67,10 @@ class Section():
             print('Section:', self.name)
         print(
             'From:', self.subvolume +
-            '\nSnapshots:', str(self.snapshot_count()) + '/' + str(self.quota),
-            '\nQuota:', str(self.percent()) + '%',
-            '\nNewer:', self.newer_snapshot(),
-            '\nOlder:', self.older_snapshot(),
+            '\nSnapshots:', str(self.snapshot_count()) + '/' + str(self.quota) +
+            '\nQuota:', str(self.percent()) + '%' +
+            '\nNewer:', self.newer_snapshot() +
+            '\nOlder:', self.older_snapshot() +
             '\nEnabled:', self.enabled
             )
 
@@ -79,40 +78,26 @@ class Section():
         return(len(self.snapshot_list()))
 
     def newer_snapshot(self, fullpath=True):
-        ts = 0
-        newer = ''
-        for i in self.snapshot_list(False):
-            aux = self.ts(i)
-            if ts < aux:
-                ts = aux
-                newer = i
-        if fullpath:
-            if newer:
-                return(os.path.join(self.name, newer))
-        return(newer)
+        if self.snapshot_count():
+            return(self.snapshot_list(fullpath)[-1])
+        else:
+            return('')
 
-    def older_snapshot(self, fullpath= True):
-        ts = 0
-        older = ''
-        for i in self.snapshot_list(False):
-            aux = self.ts(i)
-            if ts == 0 or ts > aux:
-                ts = aux
-                older = i
-        if fullpath:
-            if older:
-                return(os.path.join(self.name, older))
-        return(older)
+    def older_snapshot(self, fullpath=True):
+        if self.snapshot_count():
+            return(self.snapshot_list(fullpath)[0])
+        else:
+            return('')
 
     def quota_diff(self):
         return(self.snapshot_count() - self.quota)
 
     def now(self):
-        return(datetime.datetime.now().strftime(self.timestamp))
+        return(datetime.datetime.now().strftime(self.sformat))
 
     def ts(self, t):
         try:
-            d = datetime.datetime.strptime(t, self.timestamp)
+            d = datetime.datetime.strptime(t, self.sformat)
         except ValueError:
             clean_exit('ERROR: Bad format found in ' +
                        os.path.join(self.name, t), 9)
@@ -279,7 +264,7 @@ def parseargs():
 
 def get_settings():
     ''' Get settings from config file. Overwrited by command line options. '''
-    settings = configparser.ConfigParser(interpolation=None)  # for timestamp %
+    settings = configparser.ConfigParser()
     settings.read(args.configfile)
 
     # Exit if there are troubles with the configuration file:
