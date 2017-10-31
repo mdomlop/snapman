@@ -28,11 +28,11 @@ class Section():
             self.quota = settings[name].getint('quota')
             self.readonly = settings[name].getboolean('readonly')
             self.enabled = settings[name].getboolean('enabled')
+            self.sformat = settings[name]['timestamp']
         else:
             clean_exit('Section not found: ' + name, 8)
 
         self.name = name  # The name of section in config file (a path).
-        self.sformat = '%Y%m%d-%H%M%S'
 
     def snapshot_list(self, path=True):
         ''' Return a list of snapshots or a empty list '''
