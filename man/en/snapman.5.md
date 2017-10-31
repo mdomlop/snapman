@@ -88,6 +88,9 @@ simplify in minutes: 75m.
 **enabled**
 :    Set in `True` for enable snapshotting, `False` for disabling.
 
+**timestamp**
+:    Set the timestamp format.
+See <https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior>.
 
 # EXAMPLES
 
