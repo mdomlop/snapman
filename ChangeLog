@@ -1,6 +1,12 @@
-snapman (0.9a) unstable; urgency=medium
+snapman (0.9b) unstable; urgency=medium
 
   * Release 0.9b.
+    + Cosmetic fixes.
+    + Debian and Arch linux packaging.
+
+ -- Manuel Domínguez López <mdomlop@gmail.com>  Sat, 30 Oct 2017 13:28:10 +0100
+
+  * Release 0.9a.
     + Renamed project to Snapman.
     + Better format for configuration file.
     + Multi-thread daemon mode.

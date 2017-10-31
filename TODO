@@ -3,8 +3,9 @@ TODO
 
 *(in priority order)*
 
-- Make pacman package.
+- Set per section timestamp format.
+- Convert section timestamp: --section-timestamp
 - Make rpm package.
 - Write rollback function.
 - Send snapshots out of the pool.
-    
+

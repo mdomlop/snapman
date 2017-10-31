@@ -2,7 +2,7 @@ PREFIX='/usr'
 DESTDIR=''
 TEMPDIR := $(shell mktemp -u --suffix .snapman)
 DOCS = README INSTALL USAGE FAQ
-VERSION = 0.9a
+VERSION = 0.9b
 
 default: man README.md
 
