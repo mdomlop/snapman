@@ -5,7 +5,6 @@ import time
 import datetime
 import sys  # only for sys.stderr
 import subprocess
-from subprocess import DEVNULL
 import configparser
 import argparse
 import threading
@@ -128,14 +127,14 @@ class Section():
         if args.verbose:
             subprocess.call(cmd)
         else:
-            subprocess.call(cmd, stdout=DEVNULL)
+            subprocess.call(cmd, stdout=subprocess.DEVNULL)
 
     def delete(self, dest):
         cmd = ('btrfs', 'subvolume', 'delete', dest)
         if args.verbose:
             subprocess.call(cmd)
         else:
-            subprocess.call(cmd, stdout=DEVNULL)
+            subprocess.call(cmd, stdout=subprocess.DEVNULL)
 
     def snapshot_clean(self):
         for i in self.snapshot_list():
@@ -163,7 +162,7 @@ class Section():
                 if not os.path.isdir(dirname):
                     os.makedirs(dirname, exist_ok=True)
                 cmd = ('btrfs', 'subvolume', 'create', self.name)
-                subprocess.call(cmd, stdout=DEVNULL)
+                subprocess.call(cmd, stdout=subprocess.DEVNULL)
         except PermissionError:
             clean_exit('ERROR: I can not create the directory: ' +
                        self.name, 5)
