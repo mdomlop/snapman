@@ -3,6 +3,7 @@ TODO
 
 *(in priority order)*
 
+- Remote copies.
 - Set per section timestamp format.
 - Convert section timestamp: --section-timestamp
 - Make rpm package.
