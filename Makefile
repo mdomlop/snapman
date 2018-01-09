@@ -2,6 +2,7 @@ PREFIX = '/usr'
 DESTDIR = ''
 TEMPDIR := $(shell mktemp -u --suffix .snapman)
 DOCS = README INSTALL USAGE FAQ
+EXECUTABLE_NAME := $(shell grep ^EXECUTABLE_NAME src/snapman.py | cut -d\' -f2)
 PROGRAM_NAME := $(shell grep ^PROGRAM_NAME src/snapman.py | cut -d\' -f2)
 DESCRIPTION := $(shell grep ^DESCRIPTION src/snapman.py | cut -d\' -f2)
 VERSION := $(shell grep ^VERSION src/snapman.py | cut -d\' -f2)
@@ -25,7 +26,7 @@ README.md:
 	cat $(DOCS) > $@
 
 ChangeLog: changelog.in
-	@echo "$(PROGRAM_NAME) ($(VERSION)) unstable; urgency=medium" > $@
+	@echo "$(EXECUTABLE_NAME) ($(VERSION)) unstable; urgency=medium" > $@
 	@echo >> $@
 	@echo "  * Git build." >> $@
 	@echo >> $@
@@ -65,19 +66,18 @@ uninstall:
 	rm -rf $(PREFIX)/share/doc/snapman/
 
 clean:
-	rm -rf *.xz *.md *.gz *.tgz *.deb *.rpm ChangeLog /tmp/tmp.*.snapman debian/changelog debian/README debian/files debian/snapman debian/debhelper-build-stamp debian/snapman*
+	rm -rf *.xz *.md *.gz *.tgz *.deb *.rpm ChangeLog /tmp/tmp.*.snapman debian/changelog debian/README debian/files debian/snapman debian/debhelper-build-stamp debian/snapman* pkg
 
-pkg:
-	mkdir $(TEMPDIR)
-	tar cf $(TEMPDIR)/snapman.tar ../snapman
-	cp pacman/* ChangeLog $(TEMPDIR)/
-	cd $(TEMPDIR); makepkg
-	cp $(TEMPDIR)/snapman-git-local-1-any.pkg.tar.xz .
+pacman: clean ChangeLog man
+	sed -i "s|_name=.*|_name=$(EXECUTABLE_NAME)|" PKGBUILD
+	sed -i "s|pkgver=.*|pkgver=$(VERSION)|" PKGBUILD
+	makepkg -e
 	@echo Package done!
 	@echo You can install it as root with:
-	@echo pacman -U snapman-git-local-1-any.pkg.tar.xz
+	@echo pacman -U $(EXECUTABLE_NAME)-local-$(VERSION)-1-any.pkg.tar.xz
 
-deb: man ChangeLog
+
+dpkg: man ChangeLog
 	cp README debian/README
 	cp ChangeLog debian/changelog
 	#fakeroot debian/rules clean

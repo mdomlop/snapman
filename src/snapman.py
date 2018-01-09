@@ -10,7 +10,8 @@ import argparse
 import threading
 
 
-PROGRAM_NAME = 'snapman'
+EXECUTABLE_NAME = 'snapman'
+PROGRAM_NAME = 'Snapman'
 DESCRIPTION = 'Create and manage filesystem snapshots'
 VERSION = '0.9.1b'
 AUTHOR = 'Manuel Domínguez López'  # See AUTHORS file

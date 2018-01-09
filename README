@@ -34,3 +34,43 @@ When the program is installed, all the documentation are available at
 And, for configuration file syntax:
 
         man 5 snapman
+
+Installation
+------------
+
+You can choose between different installation methods.
+
+### Classic method ###
+
+- Build and install:
+
+        $ make
+        # make install
+
+- Uninstall:
+
+        # make uninstall
+
+
+### Debian package ###
+
+- Build and install:
+
+        $ make dpkg
+        # dpkg -i snapman_*.deb
+
+- Uninstall:
+
+        # apt purge snapman
+
+
+### Arch Linux package
+
+- Build and install:
+
+        $ make pacman
+        # pacman -U snapman-local-*.pkg.tar.xz
+
+- Uninstall:
+
+        # pacman -Rsc snapman
