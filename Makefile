@@ -28,10 +28,9 @@ AUTHORS: authors.in
 	sed s/@mail@/$(MAIL)/g $^ > $@
 
 README.md: README USAGE INSTALL
-	@echo '![@executable_name@-preview](https://github.com/mdomlop/@executable_name@/blob/master/preview.png "@executable_name@ interface")' > README.md
+	@echo '![@executable_name@-preview](https://github.com/mdomlop/@executable_name@/blob/master/preview.png "@executable_name@ interface")' > $@
+	@echo >> $@
 	cat README USAGE INSTALL >> README.md
-	@echo
-	@echo Now you can make install
 	sed -i "s|@executable_name@|$(EXECUTABLE_NAME)|g" $@
 	sed -i "s|@version@|$(VERSION)|g" $@
 
