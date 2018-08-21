@@ -10,7 +10,7 @@ Package: snapman
 Architecture: all
 Provides: snapman
 Conflicts: snapman-git
-Depends: python3 (>= 3.5), btrfs-progs (>= 4.7)
+Depends: python3 (>= 3.5), btrfs-progs (>= 4.7), python-pyqt5 (>=5.8)
 Description: A Btrfs based backup program
  A backup program based on CoW filesystem capatibilities.
  Currently only supports Btrfs.

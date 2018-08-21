@@ -25,18 +25,29 @@ filesystem and the `/home` directory.
         readonly = True
         enabled = True
         timestamp = %Y%m%d-%H%M%S
+        umask = 022
 
         [/snapshots]
 
         [/home/snapshots]
         subvolume = /home
 
-Now execute as root:
+The section name (the path inter `[]`) is the directory where snapshots will be
+stored.
+
+Each section name has some values. There is a section, named `[DEFAULT]`. This
+is used for other sections for get default values, if they are not configured
+in itself.
+
+### Command line mode
+
+
+Execute as root:
 
         # snapman
 
-The program will create two snapshots. One for each section at directory
-especified by subvolume option:
+The program will create two snapshots. One for each subvolume especified
+in every section:
 
         $ ls /snapshots /home/snapshots
         /snapshots:
@@ -62,6 +73,18 @@ values: True, False, 0, 1, on, off.
 The `timestamp` option is the name of snapshot.
 See <https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior>
 for a complete documentation of this format.
+
+The `umask` value set the umask value for directory creation.
+
+### Graphic mode
+
+Execute as root:
+
+        # snapman --gui
+
+Or search the application in your desktop menu.
+
+### Daemon mode
 
 Rather than executing manually every certain time, we can use the `--daemon`
 command line option:
@@ -104,8 +127,12 @@ Delete all snapshots of a section:
 
         # snapman --section-clean /home/snapshots
 
+Force creation of a new snapshot for section:
+
+        # snapman --section-newsnapshot /home/snapshots
+
 To show additional information when performing actions use `--verbose` option.
 
-There are more command line options. Please refer to `man snapman` to complete
-and updated guide.
+There are more command line options. Please refer to `man snapman` for a
+complete and updated guide.
 

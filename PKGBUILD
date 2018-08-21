@@ -1,29 +1,22 @@
 # Maintainer: Manuel Domínguez López <mdomlop at gmail dot com>
 
 _pkgver_year=2018
-_pkgver_month=01
-_pkgver_day=09
+_pkgver_month=08
+_pkgver_day=16
 
-_name=snapman
-_gitname=${_name}-git
-
-pkgname=${_name}-local
-pkgver=0.9.1b
+pkgname=snapman
+pkgver=1.0a
 pkgrel=1
-pkgdesc="A backup system based on Btrfs snapshots."
-url="https://github.com/mdomlop/${_gitname}"
+pkgdesc='A backup system based on Btrfs snapshots.'
+url='https://github.com/mdomlop/snapman'
 source=()
-md5sums=('SKIP')
 license=('GPL3')
 arch=('any')
-depends=('python>=3.5', 'btrfs-progs')
+depends=('btrfs-progs' 'python>=3.5' 'python-pyqt5')
 makedepends=('pandoc')
 changelog=ChangeLog
 backup=('etc/snapman.ini')
-install="${_name}.install"
-
-conflicts=($_gitname)
-provides=($_gitname)
+install="$pkgname.install"
 
 build() {
     cd "$startdir"
@@ -32,5 +25,5 @@ build() {
 
 package() {
     cd "$startdir"
-    make arch_install DESTDIR=${pkgdir} PREFIX='/usr'
+    make arch_install DESTDIR="$pkgdir"
 }

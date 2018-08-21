@@ -19,8 +19,8 @@ You can choose between different installation methods.
 
 - Build and install:
 
-        $ make deb
-        # dpkg -i snapman_*.deb
+        $ make debian_pkg
+        # dpkg -i @executable_name@_@version@_all.deb
 
 - Uninstall:
 
@@ -31,8 +31,8 @@ You can choose between different installation methods.
 
 - Build and install:
 
-        $ make pacman
-        # pacman -U snapman-local-*.pkg.tar.xz
+        $ make arch_pkg
+        # pacman -U @executable_name@-@version@-1--any.pkg.tar.xz
 
 - Uninstall:
 

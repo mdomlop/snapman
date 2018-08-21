@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Snapman
+Exec=snapman --gui
+Icon=snapman
+Categories=System;
+Terminal=false
+Type=Application

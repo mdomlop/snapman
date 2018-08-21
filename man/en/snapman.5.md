@@ -92,6 +92,9 @@ simplify in minutes: 75m.
 :    Set the timestamp format.
 See <https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior>.
 
+**umask**
+:    Set the umask value for the creation of the directory in where copies will be stored.
+
 # EXAMPLES
 
         [DEFAULT]
@@ -101,6 +104,7 @@ See <https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior>
         readonly = True
         enabled = True
         timestamp = %Y%m%d-%H%M%S
+        umask = 022
 
         [/backups/OS]
         
