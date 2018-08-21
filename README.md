@@ -1,4 +1,5 @@
 ![snapman-preview](https://github.com/mdomlop/snapman/blob/master/preview.png "snapman interface")
+
 Snapman
 -------
 
