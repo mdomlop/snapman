@@ -13,7 +13,7 @@ source=()
 license=('GPL3')
 arch=('any')
 depends=('btrfs-progs' 'python>=3.5' 'python-pyqt5')
-makedepends=('pandoc')
+makedepends=('python-docutils')
 changelog=ChangeLog
 backup=('etc/snapman.ini')
 install="$pkgname.install"

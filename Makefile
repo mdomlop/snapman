@@ -1,5 +1,6 @@
 PREFIX = '/usr'
 DESTDIR = ''
+COMMIT = ''
 DOCS = FAQ NEWS THANKS BUGS INFO
 COMPILED_DOCS = README.md ChangeLog AUTHORS USAGE.html $(EXECUTABLE_NAME).1.html $(EXECUTABLE_NAME).5.html
 PROGRAM_NAME := $(shell grep ^PROGRAM_NAME INFO | cut -d= -f2)
@@ -22,6 +23,7 @@ docs: $(COMPILED_DOCS) $(DOCS)
 
 togit: clean README.md
 	git add .
+	git commit -m "$(COMMIT)"
 	git push origin
 
 AUTHORS: authors.in
@@ -44,25 +46,25 @@ man: $(EXECUTABLE_NAME).1.gz $(EXECUTABLE_NAME).5.gz
 man_clean:
 	rm -f $(EXECUTABLE_NAME).1.gz $(EXECUTABLE_NAME).5.gz
 
-$(EXECUTABLE_NAME).1.gz: man/en/$(EXECUTABLE_NAME).1.md
-	pandoc -s -t man $^ | gzip -c > $@
+$(EXECUTABLE_NAME).1.gz: man/en/$(EXECUTABLE_NAME).1.rst
+	rst2man $^ | gzip -c > $@
 
-$(EXECUTABLE_NAME).5.gz: man/en/$(EXECUTABLE_NAME).5.md
-	pandoc -s -t man $^ | gzip -c > $@
+$(EXECUTABLE_NAME).5.gz: man/en/$(EXECUTABLE_NAME).5.rst
+	rst2man $^ | gzip -c > $@
 
 html: $(EXECUTABLE_NAME).1.html $(EXECUTABLE_NAME).5.html USAGE
 
 html_clean:
 	rm -f $(EXECUTABLE_NAME).1.html $(EXECUTABLE_NAME).5.html USAGE.html
 
-$(EXECUTABLE_NAME).1.html: man/en/$(EXECUTABLE_NAME).1.md
-	pandoc -s $^ > $@
+$(EXECUTABLE_NAME).1.html: man/en/$(EXECUTABLE_NAME).1.rst
+	rst2html $^ > $@
 
-$(EXECUTABLE_NAME).5.html: man/en/$(EXECUTABLE_NAME).5.md
-	pandoc -s $^ > $@
+$(EXECUTABLE_NAME).5.html: man/en/$(EXECUTABLE_NAME).5.rst
+	rst2html $^ > $@
 
 USAGE.html: USAGE
-	pandoc -s $^ > $@
+	rst2html $^ > $@
 
 src/$(PROGRAM_NAME)/paths.py:
 	@echo 'docpath = "$(PREFIX)/share/doc/$(EXECUTABLE_NAME)"' > $@
