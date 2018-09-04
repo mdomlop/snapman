@@ -46,34 +46,31 @@ class Section():
     info_umask = 'umask'
 
     def __init__(self, section):
+        self.noaccess = False
+
+        self.name = section.name  # The name of section in configfile (a path).
 
         self.subvolume = section['subvolume']
         self.frequency = section['frequency']
-        self.frequency_sec = self.toseconds(self.frequency)
         self.quota = section.getint('quota')
         self.readonly = section.getboolean('readonly')
         self.enabled = section.getboolean('enabled')
         self.timestamp = section['timestamp']
         self.umask = section['umask']
-
-        self.name = section.name  # The name of section in configfile (a path).
-
-        self.noaccess = False
-        self.snapshot_list()  # Changes self.noaccess value
-        self.nsnapshots = self.nsnapshots()
-        self.count = self.count()
-        self.percent = self.percent()
-
+        
         if args.verbose:
             self.stdout = subprocess.STDOUT
             self.stderr = subprocess.STDOUT
         else:
             self.stdout = subprocess.DEVNULL
             self.stderr = subprocess.DEVNULL
+            
+        self.snapshot_list()  # Changes self.noaccess value
+        self.getFrequency_sec()  # Gets self.frequency_sec
 
-    def toseconds(self, period):
+    def getFrequency_sec(self):
         '''Read minutes, hours, days or years and converts it to seconds.'''
-        period = str(period)
+        period = str(self.frequency)
         if period.endswith('s'):
             fperiod = period.replace('s', '')
         elif period.endswith('m'):
@@ -101,10 +98,18 @@ class Section():
         elif period.endswith('y'):
             fperiod = fperiod * 60 * 60 * 24 * 365
 
-        return(fperiod)
+        self.frequency_sec = fperiod
 
     def snapshot_list(self):
-        ''' Return a list of snapshots or a empty list '''
+        '''
+        Sets:
+            self.noaccess
+            self.snapshots
+            self.snapshot_paths
+            self.nsnapshots
+            self.count
+            self.percent            
+        '''
         try:
             self.snapshots = os.listdir(self.name)
         except FileNotFoundError:
@@ -116,6 +121,9 @@ class Section():
                       file=sys.stderr)
         self.snapshot_paths = list(map(lambda x: os.path.join(self.name, x),
                                        self.snapshots))
+        self.nsnapshots = self.nsnapshots()
+        self.count = self.count()
+        self.percent = self.percent()
 
     def count(self):
         return(str(self.nsnapshots) + ' / ' + str(self.quota))
@@ -328,6 +336,7 @@ class Section():
             if args.verbose:
                 print("Snapshotting", self.name,
                       "every", self.frequency_sec, "seconds")
+            # self.reload()  # Re-read configfile for update properties
             self.makesnapshot()
             time.sleep(self.frequency_sec)
 

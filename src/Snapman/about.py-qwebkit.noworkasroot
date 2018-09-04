@@ -148,3 +148,59 @@ class TranslationTab(QWidget):
         mainLayout.addWidget(mail1)
         mainLayout.addStretch(1)
         self.setLayout(mainLayout)
+
+class HtmlHelp(QWidget):
+    def __init__(self, parent=None):
+        super(HtmlHelp, self).__init__(parent)
+        self.setWindowIcon(QIcon.fromTheme('help-about'))
+
+        #self.view = QWebEngineView()
+
+        btn1 = QPushButton(_("Application"), self)
+        btn1.setIcon(QIcon.fromTheme("help-about"))
+        btn1.setToolTip(_("Show application help"))
+        #btn1.clicked.connect(self.loadHtml1)
+
+        btn5 = QPushButton(_("Configuration"), self)
+        btn5.setIcon(QIcon.fromTheme("help-about"))
+        btn5.setToolTip(_("Show configuration help"))
+        #btn5.clicked.connect(self.loadHtml5)
+
+        btnUsage = QPushButton(_("Usage"), self)
+        btnUsage.setIcon(QIcon.fromTheme("help-about"))
+        btnUsage.setToolTip(_("Show usage help"))
+        #btnUsage.clicked.connect(self.loadHtmlUsage)
+
+        mainLayout =QGridLayout()
+        mainLayout.addWidget(btn1, 0, 0)
+        mainLayout.addWidget(btn5, 0, 1)
+        mainLayout.addWidget(btnUsage, 0, 2)
+        #mainLayout.addWidget(self.view, 1, 0, 1, 3)
+        self.setLayout(mainLayout)
+        #self.loadHtml1()
+'''
+    def loadHtml1(self):
+        print('load')
+        f = open(os.path.join(docpath, 'snapman.1.html'), 'r')
+        html = f.read()
+        f.close()
+        self.view.setHtml(html)
+        self.view.show()
+        self.setWindowTitle(PROGRAM_NAME + _(": Application help"))
+
+    def loadHtml5(self):
+        f = open(os.path.join(docpath, 'snapman.5.html'), 'r')
+        html = f.read()
+        f.close()
+        self.view.setHtml(html)
+        self.view.show()
+        self.setWindowTitle(PROGRAM_NAME + _(": Configuration help"))
+
+    def loadHtmlUsage(self):
+        f = open(os.path.join(docpath, 'USAGE.html'), 'r')
+        html = f.read()
+        f.close()
+        self.view.setHtml(html)
+        self.view.show()
+        self.setWindowTitle(PROGRAM_NAME + _(": Usage help"))
+'''

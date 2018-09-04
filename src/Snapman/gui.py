@@ -1,4 +1,5 @@
 import time
+import subprocess
 from Snapman.section import Section, Snapshot, settings
 from Snapman.about import *
 from Snapman.quit import *  # include os, sys
@@ -260,7 +261,7 @@ class MainWindow(QMainWindow):
         self.snapshotTable = SnapshotTable()
         self.statusPathFocused = QLabel()
         self.aboutDialog = AboutDialog()
-        self.helpView = HtmlHelp()
+        #self.helpView = HtmlHelp()
 
         self.createActions()
         self.createMenus()
@@ -299,7 +300,9 @@ class MainWindow(QMainWindow):
         self.aboutDialog.show()
 
     def showHelp(self):
-        self.helpView.show()
+        cmd = ('khelpcenter', 'man:snapman(1)')
+        subprocess.run(cmd)
+        #self.helpView.show()
 
     def updateButtons(self):
         if len(self.sectionTable.selected) == 0:
@@ -447,4 +450,12 @@ def run():
 
 
 app = QApplication(sys.argv)
+app.setOrganizationName(PROGRAM_NAME + ' project')
+app.setApplicationName(PROGRAM_NAME)
+app.setApplicationDisplayName(PROGRAM_NAME)
+app.setApplicationVersion(VERSION)
+app.setOrganizationDomain(AUTHOR + '.me')
+if hasattr(app, 'setDesktopFileName'): # available since Qt 5.7
+    app.setDesktopFileName('me.' + AUTHOR +  '.' + PROGRAM_NAME + '.desktop')
+
 mainWindow = MainWindow()
