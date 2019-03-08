@@ -7,10 +7,5 @@
 *.tgz
 *.deb
 *.rpm
-ChangeLog
-debian/README
-debian/changelog
-debian/debhelper-build-stamp
-debian/files
-debian/snapman.*
-debian/snapman/*
+debian/
+debian/*
