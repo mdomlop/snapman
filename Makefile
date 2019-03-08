@@ -1,79 +1,38 @@
 PREFIX = '/usr'
 DESTDIR = ''
 COMMIT = ''
-DOCS = FAQ NEWS THANKS BUGS INFO
-COMPILED_DOCS = README.md ChangeLog AUTHORS USAGE.html $(EXECUTABLE_NAME).1.html $(EXECUTABLE_NAME).5.html
-PROGRAM_NAME := $(shell grep ^PROGRAM_NAME INFO | cut -d= -f2)
-EXECUTABLE_NAME := $(shell grep ^EXECUTABLE_NAME INFO | cut -d= -f2)
-AUTHOR := $(shell grep ^AUTHOR INFO | cut -d= -f2)
-SOURCE := $(shell grep ^SOURCE INFO | cut -d= -f2)
-VERSION := $(shell grep ^VERSION INFO | cut -d= -f2)
-LICENSE := $(shell grep ^LICENSE INFO | cut -d= -f2)
-MAIL := $(shell grep ^MAIL INFO | cut -d= -f2 | tr '[A-Za-z]' '[N-ZA-Mn-za-m]')
-TIMESTAMP = $(shell LC_ALL=C date '+%a, %d %b %Y %T %z')
-YEAR = 2018
+DOCS = FAQ NEWS THANKS BUGS INFO ChangeLog README.md AUTHORS
+MAN = $(patsubst %.rst,%.gz,$(wildcard man/*/*.rst))
+HTML = $(patsubst %.rst,%.html,$(wildcard man/*/*.rst)) README.html
 
 PYDIR = $(shell python3 -c 'import site;print(site.getsitepackages()[0])')
-MODULES = src/$(PROGRAM_NAME)/about.py src/$(PROGRAM_NAME)/functions.py src/$(PROGRAM_NAME)/program_info.py src/$(PROGRAM_NAME)/quit.py src/$(PROGRAM_NAME)/settings.py src/$(PROGRAM_NAME)/args.py src/$(PROGRAM_NAME)/gui.py src/$(PROGRAM_NAME)/section.py src/$(PROGRAM_NAME)/paths.py
+MODULES = $(wildcard src/$(PROGRAM_NAME)/*.py)
 
+PROGRAM_NAME := $(shell grep ^PROGRAM_NAME INFO | cut -d= -f2)
+EXECUTABLE_NAME := $(shell grep ^EXECUTABLE_NAME INFO | cut -d= -f2)
+VERSION := $(shell grep ^VERSION INFO | cut -d= -f2)
+MAIL := $(shell grep ^MAIL INFO | cut -d= -f2 | tr '[A-Za-z]' '[N-ZA-Mn-za-m]')
 
-dist: man docs modules
+DEBIANPKG = $(EXECUTABLE_NAME)_$(VERSION)_all.deb
+ARCHPKG = $(EXECUTABLE_NAME)-$(VERSION)-1-any.pkg.tar.xz
 
-docs: $(COMPILED_DOCS) $(DOCS)
+dist: man docs 
 
-togit: clean README.md
-	git add .
-	git commit -m "$(COMMIT)"
-	git push origin
+docs: $(HTML) $(DOCS)
 
-AUTHORS: authors.in
-	sed s/@mail@/$(MAIL)/g $^ > $@
-
-README.md: README USAGE INSTALL
-	@echo '![@executable_name@-preview](https://github.com/mdomlop/@executable_name@/blob/master/preview.png "@executable_name@ interface")' > $@
-	@echo >> $@
-	cat README USAGE INSTALL >> README.md
-	sed -i "s|@executable_name@|$(EXECUTABLE_NAME)|g" $@
-	sed -i "s|@version@|$(VERSION)|g" $@
-
-ChangeLog: changelog.in
-	sed "s|@mail@|$(MAIL)|g" $^ > $@
-
-version_update: purge README.md ChangeLog
-
-man: $(EXECUTABLE_NAME).1.gz $(EXECUTABLE_NAME).5.gz
-
+man: $(MAN)
+%.gz: %.rst
+	rst2man $^ | gzip -c > $@
 man_clean:
-	rm -f $(EXECUTABLE_NAME).1.gz $(EXECUTABLE_NAME).5.gz
+	rm -f $(MAN)
 
-$(EXECUTABLE_NAME).1.gz: man/en/$(EXECUTABLE_NAME).1.rst
-	rst2man $^ | gzip -c > $@
-
-$(EXECUTABLE_NAME).5.gz: man/en/$(EXECUTABLE_NAME).5.rst
-	rst2man $^ | gzip -c > $@
-
-html: $(EXECUTABLE_NAME).1.html $(EXECUTABLE_NAME).5.html USAGE
-
+html: $(HTML)
+%.html: %.rst
+	rst2html $^ > $@
+README.html: README.md
+	rst2html $^ > $@
 html_clean:
-	rm -f $(EXECUTABLE_NAME).1.html $(EXECUTABLE_NAME).5.html USAGE.html
-
-$(EXECUTABLE_NAME).1.html: man/en/$(EXECUTABLE_NAME).1.rst
-	rst2html $^ > $@
-
-$(EXECUTABLE_NAME).5.html: man/en/$(EXECUTABLE_NAME).5.rst
-	rst2html $^ > $@
-
-USAGE.html: USAGE
-	rst2html $^ > $@
-
-src/$(PROGRAM_NAME)/paths.py:
-	@echo 'docpath = "$(PREFIX)/share/doc/$(EXECUTABLE_NAME)"' > $@
-
-modules: $(MODULES)
-
-modules_clean:
-	rm -f src/$(PROGRAM_NAME)/paths.py
-	rm -rf src/__pycache__ src/$(PROGRAM_NAME)/__pycache__
+	rm -f $(HTML)
 
 install_executables:
 	install -Dm 755 src/$(EXECUTABLE_NAME).py $(DESTDIR)$(PREFIX)/bin/$(EXECUTABLE_NAME)
@@ -84,12 +43,12 @@ install_services:
 
 install_docs:
 	install -dm 755 $(DESTDIR)$(PREFIX)/share/doc/$(EXECUTABLE_NAME)
-	install -Dm 644 $(DOCS) $(COMPILED_DOCS) $(DESTDIR)$(PREFIX)/share/doc/$(EXECUTABLE_NAME)
+	install -Dm 644 $(DOCS) $(HTML) $(DESTDIR)$(PREFIX)/share/doc/$(EXECUTABLE_NAME)
 	install -Dm 644 LICENSE $(DESTDIR)$(PREFIX)/share/licenses/$(EXECUTABLE_NAME)/COPYING
 
 install_manuals:
-	install -Dm 644 $(EXECUTABLE_NAME).1.gz $(DESTDIR)$(PREFIX)/share/man/man1/$(EXECUTABLE_NAME).1.gz
-	install -Dm 644 $(EXECUTABLE_NAME).5.gz $(DESTDIR)$(PREFIX)/share/man/man5/$(EXECUTABLE_NAME).5.gz
+	install -Dm 644 man/en/$(EXECUTABLE_NAME).1.gz $(DESTDIR)$(PREFIX)/share/man/man1/$(EXECUTABLE_NAME).1.gz
+	install -Dm 644 man/en/$(EXECUTABLE_NAME).5.gz $(DESTDIR)$(PREFIX)/share/man/man5/$(EXECUTABLE_NAME).5.gz
 
 install_graphics:
 	install -Dm 644 resources/$(EXECUTABLE_NAME).svg $(DESTDIR)/$(PREFIX)/share/pixmaps/$(EXECUTABLE_NAME).svg
@@ -112,14 +71,13 @@ uninstall:
 	rm -f $(PREFIX)/share/applications/$(EXECUTABLE_NAME).desktop
 	rm -f /etc/$(EXECUTABLE_NAME).ini
 	rm -f /lib/systemd/system/$(EXECUTABLE_NAME).service
-	rm -f $(PREFIX)/share/man/man1/$(EXECUTABLE_NAME).1.gz
-	rm -f $(PREFIX)/share/man/man5/$(EXECUTABLE_NAME).5.gz
+	rm -f $(PREFIX)/share/man/man1/$(EXECUTABLE_NAME).?.gz
 	rm -rf $(PREFIX)/share/licenses/$(EXECUTABLE_NAME)/
 	rm -rf $(PREFIX)/share/doc/$(EXECUTABLE_NAME)/
 	rm -rf $(PYDIR)/$(PROGRAM_NAME)
 
-clean: arch_clean debian_clean man_clean html_clean modules_clean
-	rm -f ChangeLog README.md AUTHORS
+clean: arch_clean debian_clean man_clean html_clean
+	rm -rf src/__pycache__ src/$(PROGRAM_NAME)/__pycache__
 
 debian:
 	mkdir debian
@@ -148,26 +106,30 @@ debian/copyright: copyright debian
 	@echo >> $@
 	sed s/@mail@/$(MAIL)/g copyright >> $@
 
-debian_pkg: clean debian/compat debian/control debian/rules debian/changelog debian/README
+debian_pkg: $(DEBIANPKG)
+$(DEBIANPKG): debian/compat debian/control debian/rules debian/changelog debian/README
 	#fakeroot debian/rules clean
 	#fakeroot debian/rules build
 	fakeroot debian/rules binary
-	mv ../$(EXECUTABLE_NAME)_$(VERSION)_all.deb .
+	mv ../$@ .
 	@echo Package done!
 	@echo You can install it as root with:
-	@echo dpkg -i $(EXECUTABLE_NAME)_$(VERSION)_all.deb
+	@echo dpkg -i $@
+
 
 debian_clean:
-	rm -rf debian $(EXECUTABLE_NAME)_$(VERSION)_all.deb
+	rm -rf debian $(DEBIANPKG)
 
-arch_pkg: clean ChangeLog
+arch_pkg: $(ARCHPKG)
+$(ARCHPKG): PKGBUILD ChangeLog
 	sed -i "s|pkgname=.*|pkgname=$(EXECUTABLE_NAME)|" PKGBUILD
 	sed -i "s|pkgver=.*|pkgver=$(VERSION)|" PKGBUILD
-	makepkg
+	makepkg -d
 	@echo Package done!
 	@echo You can install it as root with:
-	@echo pacman -U $(EXECUTABLE_NAME)-$(VERSION)-1-any.pkg.tar.xz
+	@echo pacman -U $@
 
 arch_clean:
-	rm -rf pkg $(EXECUTABLE_NAME)-$(VERSION)-1-any.pkg.tar.xz
+	rm -rf pkg $(ARCHPKG)
 
+.PHONY: clean arch_pkg arch_clean debian_pkg debian_clean
