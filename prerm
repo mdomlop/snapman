@@ -20,18 +20,12 @@ set -e
 case "$1" in
     upgrade|deconfigure)
     ;;
-    
+
     remove|purge)
-    if systemctl is-active snapman > /dev/null
-    then
         echo "Stopping snapman service..."
         systemctl stop snapman
-    fi
-    if systemctl is-enabled snapman > /dev/null
-    then
         echo "Disabling snapman service..."
         systemctl disable snapman
-    fi
     ;;
 
     failed-upgrade)

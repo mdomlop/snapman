@@ -23,13 +23,9 @@ case "$1" in
     upgrade|abort-upgrade)
     echo "Reloading daemons..."
     systemctl daemon-reload
-    if systemctl is-active snapman > /dev/null
-    then
-        echo "Restarting snapman service..."
-        systemctl restart snapman
-    fi
+    systemctl condrestart snapman
     ;;
-    
+
     purge|remove|failed-upgrade|abort-install|disappear)
     ;;
 
