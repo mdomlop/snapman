@@ -9,7 +9,7 @@ gettext.translation(EXECUTABLE_NAME, localedir="/usr/share/locale",
 
 PROGRAM_NAME = 'Snapman'
 DESCRIPTION = 'Create and manage filesystem snapshots'
-VERSION = '1.0a'
+VERSION = '1.1a'
 AUTHOR = 'Manuel Domínguez López'  # See AUTHORS file
 MAIL = 'mdomlop@gmail.com'
 SOURCE = "https://github.com/mdomlop/snapman"
