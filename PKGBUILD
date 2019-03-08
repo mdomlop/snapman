@@ -12,7 +12,7 @@ url='https://github.com/mdomlop/snapman'
 source=()
 license=('GPL3')
 arch=('any')
-depends=('btrfs-progs' 'python>=3.5' 'python-pyqt5' 'python-pyqtwebengine')
+depends=('btrfs-progs' 'python>=3.5' 'python-pyqt5' 'python-pyqtwebengine' 'khelpcenter')
 makedepends=('python-docutils')
 changelog=ChangeLog
 backup=('etc/snapman.ini')
