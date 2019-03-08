@@ -79,25 +79,25 @@ uninstall:
 clean: arch_clean debian_clean man_clean html_clean
 	rm -rf src/__pycache__ src/$(PROGRAM_NAME)/__pycache__
 
-debian:
-	mkdir debian
+dpkg/debian:
+	mkdir -p $@
 
-debian/compat: compat debian
+dpkg/debian/compat: compat debian
 	cp compat $@
 
-debian/rules: rules debian
+dpkg/debian/rules: rules debian
 	cp rules $@
 
-debian/changelog: ChangeLog debian
+dpkg/debian/changelog: ChangeLog debian
 	cp ChangeLog $@
 
-debian/control: control debian
+dpkg/debian/control: control debian
 	sed s/@mail@/$(MAIL)/g control > $@
 
-debian/README: README.md debian
+dpkg/debian/README: README.md debian
 	cp README.md debian/README
 
-debian/copyright: copyright debian
+dpkg/debian/copyright: copyright debian
 	@echo Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/ > $@
 	@echo Upstream-Name: $(EXECUTABLE_NAME) >> $@
 	@echo "Upstream-Contact: $(AUTHOR) <$(MAIL)>" >> $@
@@ -107,18 +107,18 @@ debian/copyright: copyright debian
 	sed s/@mail@/$(MAIL)/g copyright >> $@
 
 debian_pkg: $(DEBIANPKG)
-$(DEBIANPKG): debian/compat debian/control debian/rules debian/changelog debian/README
+$(DEBIANPKG): dpkg/debian/compat dpkg/debian/control dpkg/debian/rules dpkg/debian/changelog dpkg/debian/README
 	#fakeroot debian/rules clean
 	#fakeroot debian/rules build
-	fakeroot debian/rules binary
-	mv ../$@ .
+	cd dpkg; fakeroot debian/rules binary
 	@echo Package done!
 	@echo You can install it as root with:
 	@echo dpkg -i $@
 
 
 debian_clean:
-	rm -rf debian $(DEBIANPKG)
+	rm -rf dpkg
+	rm -f $(DEBIANPKG)
 
 arch_pkg: $(ARCHPKG)
 $(ARCHPKG): PKGBUILD ChangeLog
@@ -130,6 +130,7 @@ $(ARCHPKG): PKGBUILD ChangeLog
 	@echo pacman -U $@
 
 arch_clean:
-	rm -rf pkg $(ARCHPKG)
+	rm -rf pkg
+	rm -f $(ARCHPKG)
 
 .PHONY: clean arch_pkg arch_clean debian_pkg debian_clean
