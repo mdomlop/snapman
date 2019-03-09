@@ -2,6 +2,7 @@ snapman (1.1a) unstable; urgency=medium
 
   * Release 1.1a.
     + Fix new python-pyqtwebengine dependency.
+    + Using setproctitle module for set the name of the process.
     + Improved Makefile.
 
  -- Manuel Domínguez López <mdomlop@gmail.com > Fri, 08 Mar 2019 17:41:41 +0100
