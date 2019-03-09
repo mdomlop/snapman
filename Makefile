@@ -1,9 +1,9 @@
 PREFIX = '/usr'
 DESTDIR = ''
 COMMIT = ''
-DOCS = FAQ NEWS THANKS BUGS INFO ChangeLog README.md AUTHORS
+DOCS = FAQ.md NEWS.md THANKS BUGS INFO ChangeLog README.md AUTHORS
 MAN = $(patsubst %.rst,%.gz,$(wildcard man/*/*.rst))
-HTML = $(patsubst %.rst,%.html,$(wildcard man/*/*.rst)) README.html
+HTML = $(patsubst %.rst,%.html,$(wildcard man/*/*.rst)) README.html FAQ.html
 
 PYDIR = $(shell python3 -c 'import site;print(site.getsitepackages()[0])')
 MODULES = $(wildcard src/$(PROGRAM_NAME)/*.py)
@@ -16,7 +16,7 @@ MAIL := $(shell grep ^MAIL INFO | cut -d= -f2 | tr '[A-Za-z]' '[N-ZA-Mn-za-m]')
 DEBIANPKG = $(EXECUTABLE_NAME)_$(VERSION)_all.deb
 ARCHPKG = $(EXECUTABLE_NAME)-$(VERSION)-1-any.pkg.tar.xz
 
-dist: man docs 
+dist: man docs
 
 docs: $(HTML) $(DOCS)
 
@@ -29,7 +29,7 @@ man_clean:
 html: $(HTML)
 %.html: %.rst
 	rst2html $^ > $@
-README.html: README.md
+%.html: %.md
 	rst2html $^ > $@
 html_clean:
 	rm -f $(HTML)
@@ -79,25 +79,25 @@ uninstall:
 clean: arch_clean debian_clean man_clean html_clean
 	rm -rf src/__pycache__ src/$(PROGRAM_NAME)/__pycache__
 
-dpkg/debian:
+debian:
 	mkdir -p $@
 
-dpkg/debian/compat: compat debian
-	cp compat $@
+debian/compat: compat debian
+	cp $< $@
 
-dpkg/debian/rules: rules debian
-	cp rules $@
+debian/rules: rules debian
+	cp $< $@
 
-dpkg/debian/changelog: ChangeLog debian
-	cp ChangeLog $@
+debian/changelog: ChangeLog debian
+	cp $< $@
 
-dpkg/debian/control: control debian
-	sed s/@mail@/$(MAIL)/g control > $@
+debian/control: control debian
+	sed s/@mail@/$(MAIL)/g $< > $@
 
-dpkg/debian/README: README.md debian
-	cp README.md debian/README
+debian/README: README.md debian
+	cp $< $@
 
-dpkg/debian/copyright: copyright debian
+debian/copyright: copyright debian
 	@echo Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/ > $@
 	@echo Upstream-Name: $(EXECUTABLE_NAME) >> $@
 	@echo "Upstream-Contact: $(AUTHOR) <$(MAIL)>" >> $@
@@ -107,17 +107,18 @@ dpkg/debian/copyright: copyright debian
 	sed s/@mail@/$(MAIL)/g copyright >> $@
 
 debian_pkg: $(DEBIANPKG)
-$(DEBIANPKG): dpkg/debian/compat dpkg/debian/control dpkg/debian/rules dpkg/debian/changelog dpkg/debian/README
+$(DEBIANPKG): debian/compat debian/control debian/rules debian/changelog debian/README
 	#fakeroot debian/rules clean
 	#fakeroot debian/rules build
-	cd dpkg; fakeroot debian/rules binary
+	fakeroot debian/rules binary
+	mv ../$@ $@
 	@echo Package done!
 	@echo You can install it as root with:
 	@echo dpkg -i $@
 
 
 debian_clean:
-	rm -rf dpkg
+	rm -rf debian
 	rm -f $(DEBIANPKG)
 
 arch_pkg: $(ARCHPKG)
