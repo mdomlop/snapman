@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import setproctitle
 import Snapman.functions
 from Snapman.args import args
 from Snapman.quit import clean_exit
@@ -45,5 +46,6 @@ def main():
 
 
 if __name__ == '__main__':
+    setproctitle.setproctitle('snapman')
     main()
     clean_exit()
