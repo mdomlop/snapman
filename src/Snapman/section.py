@@ -30,6 +30,16 @@ class Snapshot():
         self.path = path
         self.timestamp = ts
 
+    def get_generation(self):
+        cmd = ('btrfs', 'subvolume', 'show', self.path)
+        generation = subprocess.Popen(cmd,
+                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+
+        for i in generation.communicate()[0].decode().split('\n'):
+            if 'Generation' == i.split(':')[0].strip():  # key is 'Generation'
+                return(i.split(':')[1].strip())  # value of the key
+        return(None)
+
 
 class Section():
     ''' The Section class represents a individual section in config file. '''
@@ -57,14 +67,14 @@ class Section():
         self.enabled = section.getboolean('enabled')
         self.timestamp = section['timestamp']
         self.umask = section['umask']
-        
+
         if args.verbose:
             self.stdout = subprocess.STDOUT
             self.stderr = subprocess.STDOUT
         else:
             self.stdout = subprocess.DEVNULL
             self.stderr = subprocess.DEVNULL
-            
+
         self.snapshot_list()  # Changes self.noaccess value
         self.getFrequency_sec()  # Gets self.frequency_sec
 
@@ -108,7 +118,7 @@ class Section():
             self.snapshot_paths
             self.nsnapshots
             self.count
-            self.percent            
+            self.percent
         '''
         try:
             self.snapshots = os.listdir(self.name)
@@ -209,7 +219,7 @@ class Section():
         if fullpath:
             if newer:
                 return(os.path.join(self.name, newer))
-        return(newer)
+        return(newer)  # Must be None?
 
     def older_snapshot(self, fullpath=True):
         ts = 0
@@ -223,6 +233,24 @@ class Section():
             if older:
                 return(os.path.join(self.name, older))
         return(older)
+
+def has_changed(self):
+    ''' Return True if section has changed respect his newer snapshot. '''
+    src = Snapshot(self.subvolume)
+    newer = Snapshot(self.newer_snapshot())
+
+    if not newer:
+        return(True)  # No snapshots means that section has changes
+
+    cmd = ('btrfs', 'subvolume', 'find-new', src.path, newer.get_generation())
+    diff = subprocess.Popen(cmd,
+                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+
+    for i in diff.communicate()[0].decode().split('\n'):
+        if i.startswith('inode'):
+            return(True)  # Has changed
+        else:
+            return(False)
 
     def quota_diff(self):
         n = self.nsnapshots
@@ -326,8 +354,9 @@ class Section():
             newer = self.ts(self.newer_snapshot(False))
             diff = now - newer
             if diff > self.frequency_sec:
-                if not self.delete_and_write():
-                    return(False)
+                if self.has_changed():
+                    if not self.delete_and_write():
+                        return(False)
         return(True)
 
     # Daemonizing:
