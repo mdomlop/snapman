@@ -374,6 +374,8 @@ class Section():
                 print("Snapshotting", self.name,
                       "every", self.frequency_sec, "seconds")
             # self.reload()  # Re-read configfile for update properties
+            # FIXME: reload() function must be mandatory due manual
+            # modifications of configfile, subvolumes or snapshots
             self.makesnapshot()
             time.sleep(self.frequency_sec)
 
