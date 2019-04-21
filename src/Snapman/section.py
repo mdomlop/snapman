@@ -30,16 +30,6 @@ class Snapshot():
         self.path = path
         self.timestamp = ts
 
-    def get_generation(self):
-        cmd = ('btrfs', 'subvolume', 'show', self.path)
-        generation = subprocess.Popen(cmd,
-                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-
-        for i in generation.communicate()[0].decode().split('\n'):
-            if 'Generation' == i.split(':')[0].strip():  # key is 'Generation'
-                return(i.split(':')[1].strip())  # value of the key
-        return(None)
-
 
 class Section():
     ''' The Section class represents a individual section in config file. '''
@@ -69,8 +59,8 @@ class Section():
         self.umask = section['umask']
 
         if args.verbose:
-            self.stdout = subprocess.STDOUT
-            self.stderr = subprocess.STDOUT
+            self.stdout = sys.stdout.buffer
+            self.stderr = sys.stdout.buffer
         else:
             self.stdout = subprocess.DEVNULL
             self.stderr = subprocess.DEVNULL
@@ -109,6 +99,16 @@ class Section():
             fperiod = fperiod * 60 * 60 * 24 * 365
 
         self.frequency_sec = fperiod
+
+    def get_generation(self, subvolume_path):
+        cmd = ('btrfs', 'subvolume', 'show', subvolume_path)
+        generation = subprocess.Popen(cmd,
+                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+
+        for i in generation.communicate()[0].decode().split('\n'):
+            if 'Generation' == i.split(':')[0].strip():  # key is 'Generation'
+                return(i.split(':')[1].strip())  # value of the key
+        return(None)
 
     def snapshot_list(self):
         '''
@@ -236,14 +236,11 @@ class Section():
 
     def has_changed(self):
         ''' Return True if section has changed respect his newer snapshot. '''
-        src = Snapshot(self.subvolume)
-        newer = Snapshot(self.newer_snapshot())
-
-        if not newer:
+        if not self.nsnapshots:
             return(True)  # No snapshots means that section has changes
 
-        cmd = ('btrfs', 'subvolume', 'find-new', src.path,
-               newer.get_generation())
+        cmd = ('btrfs', 'subvolume', 'find-new', self.subvolume,
+               self.get_generation(self.newer_snapshot()))
         diff = subprocess.Popen(cmd,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.DEVNULL)
@@ -252,6 +249,9 @@ class Section():
             if i.startswith('inode'):
                 return(True)  # Has changed
             else:
+                if args.verbose:
+                    print('Section:', self.name, 'has not changed since',
+                          os.path.basename(self.newer_snapshot()))
                 return(False)
 
     def quota_diff(self):
@@ -278,8 +278,7 @@ class Section():
                    self.subvolume, dest)
         else:
             cmd = ('btrfs', 'subvolume', 'snapshot', self.subvolume, dest)
-        if subprocess.run(cmd,
-                          stdout=self.stdout, stderr=self.stderr).returncode:
+        if subprocess.run(cmd, stdout=self.stdout, stderr=self.stderr).returncode:
             return(False)
         return(True)
 
