@@ -234,23 +234,25 @@ class Section():
                 return(os.path.join(self.name, older))
         return(older)
 
-def has_changed(self):
-    ''' Return True if section has changed respect his newer snapshot. '''
-    src = Snapshot(self.subvolume)
-    newer = Snapshot(self.newer_snapshot())
+    def has_changed(self):
+        ''' Return True if section has changed respect his newer snapshot. '''
+        src = Snapshot(self.subvolume)
+        newer = Snapshot(self.newer_snapshot())
 
-    if not newer:
-        return(True)  # No snapshots means that section has changes
+        if not newer:
+            return(True)  # No snapshots means that section has changes
 
-    cmd = ('btrfs', 'subvolume', 'find-new', src.path, newer.get_generation())
-    diff = subprocess.Popen(cmd,
-                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        cmd = ('btrfs', 'subvolume', 'find-new', src.path,
+               newer.get_generation())
+        diff = subprocess.Popen(cmd,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.DEVNULL)
 
-    for i in diff.communicate()[0].decode().split('\n'):
-        if i.startswith('inode'):
-            return(True)  # Has changed
-        else:
-            return(False)
+        for i in diff.communicate()[0].decode().split('\n'):
+            if i.startswith('inode'):
+                return(True)  # Has changed
+            else:
+                return(False)
 
     def quota_diff(self):
         n = self.nsnapshots
@@ -323,6 +325,13 @@ def has_changed(self):
         return(status)
 
     def makesnapshot(self, force=False):
+        # Return if source subvolume not exists:
+        if not os.path.exists(self.subvolume):
+            print('WARNING in section', self.name +
+                  ': Subvolume', self.subvolume, 'does not exist',
+                  file=sys.stderr)
+            return(False)
+
         # Only do actions if enabled property is on:
         if not self.enabled:
             if args.verbose:
