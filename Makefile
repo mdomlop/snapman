@@ -62,6 +62,7 @@ install: install_executables install_docs install_manuals install_graphics insta
 
 arch_install_services:
 	install -Dm644 src/$(EXECUTABLE_NAME).service $(DESTDIR)$(PREFIX)/lib/systemd/system/$(EXECUTABLE_NAME).service
+	install -Dm644 src/$(EXECUTABLE_NAME)d.service $(DESTDIR)$(PREFIX)/lib/systemd/system/$(EXECUTABLE_NAME)d.service
 
 arch_install: install_executables install_docs install_manuals install_graphics arch_install_services install_modules
 
