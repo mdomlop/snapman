@@ -51,21 +51,30 @@ DAEMON MODE EXECUTION
 =====================
 
 You can run periodically this program if you use the ``--daemon``
-option.
+option. See next section for more information about running in systemd.
 
 Because a misconfigured or non-existent configuration file does not
 allow the execution of the program, such file only is readed one time. I
 you performs changes on it, you may to restart the program, if you want
 these changes to be applied.
 
-SYSTEMD SERVICE
-===============
+SYSTEMD SERVICES
+================
+
+Daemon service
+--------------
 
 A systemd service was provided for execute in daemon mode. Just start
-and enable ``snapman.service``.
+and enable ``snapmand.service``.
 
 As mentioned before, you must restart the service if you performs
 changes on configuration file and want these changes to be applied.
+
+One time at boot service
+------------------------
+
+If you only want to run it one time at boot, start and enable
+``snapman.service``.
 
 OPTIONS
 =======
@@ -162,8 +171,10 @@ FILES
 **/etc/snapman.ini**
    Default configuration file provided. Sets all stuff about snapshots.
    Edit at your preferences. See snapman(5).
+**/lib/systemd/system/snapmand.service**
+   The systemd service for running in daemon mode.
 **/lib/systemd/system/snapman.service**
-   The systemd service.
+   The systemd service for running only one time at boot.
 
 HISTORY
 =======
