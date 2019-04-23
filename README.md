@@ -12,6 +12,9 @@ reach a defined quota. If quota was reached, then it will remove the older
 backup before to make a new one to keep the number of backups indicated in
 quota.
 
+Backups are only performed if there are changes in the indicated subvolume from
+previous backups.
+
 Snapman will run periodically if you use the `--daemon` command line option.
 
 Backups are stored in a directory specified in the configuration file.
