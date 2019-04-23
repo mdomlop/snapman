@@ -7,9 +7,9 @@ Configuration file of ``snapman``
 --------------------------------------
 
 :Author: Manuel Domínguez López <mdomlop@gmail.com>
-:Date:   2018-08-25
+:Date:   2019-04-23
 :Copyright: GPLv3
-:Version: 1.0a
+:Version: 1.2a
 :Manual section: 5
 :Manual group: configuration files
 
