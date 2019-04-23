@@ -139,12 +139,21 @@ frequency.
 
 For that, a systemd service is included. Just start and enable it:
 
-        # systemctl start snapman
-        # systemctl enable snapman
+        # systemctl start snapmand
+        # systemctl enable snapmand
 
 Or, if you do no use systemd, add a line like `snapman --daemon` to your
 `/etc/rc.local` or whatever it is that uses your startup system.
 
+### One shot service
+
+If you only want to make a single copy each time the system is started
+(if necessary), instead of using the `snapmand.service`, start and enable
+`snapman.service` (without the final _d_). This can be useful for saving copies of
+systems that have successfully started.
+
+        # systemctl start snapman
+        # systemctl enable snapman
 
 ### Command line options.
 
