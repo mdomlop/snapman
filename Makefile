@@ -113,6 +113,7 @@ $(DEBIANPKG): debian/compat debian/control debian/rules debian/changelog debian/
 	#fakeroot debian/rules build
 	fakeroot debian/rules binary
 	mv ../$@ $@
+	@echo
 	@echo Package done!
 	@echo You can install it as root with:
 	@echo dpkg -i $@
@@ -127,6 +128,7 @@ $(ARCHPKG): PKGBUILD ChangeLog
 	sed -i "s|pkgname=.*|pkgname=$(EXECUTABLE_NAME)|" PKGBUILD
 	sed -i "s|pkgver=.*|pkgver=$(VERSION)|" PKGBUILD
 	makepkg -d
+	@echo
 	@echo Package done!
 	@echo You can install it as root with:
 	@echo pacman -U $@
