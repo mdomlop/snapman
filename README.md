@@ -16,7 +16,7 @@ Snapman will run periodically if you use the `--daemon` command line option.
 
 Backups are stored in a directory specified in the configuration file.
 
-Since version 1.0a Snapman has an integrated GUI interface. It can be 
+Since version 1.0a Snapman has an integrated GUI interface. It can be
 activated using the `--gui` command line option.
 
 For each subvolume that you want to backup you must to write at least an entry
@@ -40,7 +40,7 @@ And, for configuration file syntax:
 
         man 5 snapman
 
-    
+
 Usage
 -----
 
@@ -198,10 +198,12 @@ You can choose between different installation methods.
 
 ### Debian package ###
 
+** Sorry. The Debian package building will not be supported until the stable version is reached. **
+
 - Build and install:
 
         $ make debian_pkg
-        # dpkg -i snapman_1.0a_all.deb
+        # dpkg -i package_name.deb
 
 - Uninstall:
 
@@ -213,7 +215,7 @@ You can choose between different installation methods.
 - Build and install:
 
         $ make arch_pkg
-        # pacman -U snapman-1.0a-1--any.pkg.tar.xz
+        # pacman -U package_name.pkg.tar.xz
 
 - Uninstall:
 
