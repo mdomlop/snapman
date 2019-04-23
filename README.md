@@ -205,6 +205,18 @@ You can choose between different installation methods.
         # make uninstall
 
 
+### Arch Linux package
+
+- Build and install:
+
+        $ make arch_pkg
+        # pacman -U package_name.pkg.tar.xz
+
+- Uninstall:
+
+        # pacman -Rsc snapman
+
+
 ### Debian package ###
 
 ** Sorry. The Debian package building will not be supported until the stable version is reached. **
@@ -217,15 +229,3 @@ You can choose between different installation methods.
 - Uninstall:
 
         # apt purge snapman
-
-
-### Arch Linux package
-
-- Build and install:
-
-        $ make arch_pkg
-        # pacman -U package_name.pkg.tar.xz
-
-- Uninstall:
-
-        # pacman -Rsc snapman
