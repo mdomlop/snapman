@@ -1,26 +1,29 @@
 import sys
 import os
-from Snapman.args import args
+import Snapman.args
 
 NORMAL = 0
-BADCONFIG = 1
-BADSECT = 2
-BADSNAP = 3
-BADSUB = 4
-BADFREQ = 5
-BADTS = 6
-BADDIR = 7
-BADPID = 8
+BADCOM = Snapman.args.BADCOM
+BADCONFIG = 2
+BADSECT = 3
+BADSNAP = 4
+BADSUB = 5
+BADFREQ = 6
+BADTS = 7
+BADDIR = 8
+BADPID = 9
+BADPERM = 10
 KBINT = 130
 
 
 def clean_exit(text=None, exitnum=NORMAL):
     if text:
         print(text, file=sys.stderr)
-    if args.pidfile:
+    if Snapman.args.pidfile:
         try:
-            os.remove(args.pidfile)
+            os.remove(Snapman.args.pidfile)
         except:
-            print('Failed to remove pidfile:', args.pidfile, file=sys.stderr)
+            print('Failed to remove pidfile:', Snapman.args.pidfile,
+                    file=sys.stderr)
             sys.exit(BADPID)
     sys.exit(exitnum)

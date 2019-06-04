@@ -5,7 +5,7 @@ _pkgver_month=08
 _pkgver_day=16
 
 pkgname=snapman
-pkgver=1.2a
+pkgver=2.0a
 pkgrel=1
 pkgdesc='A backup system based on Btrfs snapshots.'
 url='https://github.com/mdomlop/snapman'

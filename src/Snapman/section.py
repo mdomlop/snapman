@@ -4,11 +4,11 @@ import subprocess
 import threading
 import Snapman.settings
 
-from Snapman.args import args
+import Snapman.args
 from Snapman.quit import *  # include os, sys
 
 
-settings = Snapman.settings.Settings(args.configfile)
+settings = Snapman.settings.Settings(Snapman.args.configfile)
 
 
 class Snapshot():
@@ -58,7 +58,7 @@ class Section():
         self.timestamp = section['timestamp']
         self.umask = section['umask']
 
-        if args.verbose:
+        if Snapman.args.verbose:
             self.stdout = sys.stdout.buffer
             self.stderr = sys.stdout.buffer
         else:
@@ -166,7 +166,7 @@ class Section():
                  self.readonly, self.enabled, self.timestamp, self.umask)
         print('[' + self.name + ']')
         for i in range(len(propk)):
-            if args.verbose:
+            if Snapman.args.verbose:
                 print(propk[i], '=', propv[i])
             else:
                 if settings.config['DEFAULT'][propk[i]] != str(propv[i]):
@@ -179,7 +179,7 @@ class Section():
         return(str(round(int(n) * 100 / self.quota)) + ' %')
 
     def info(self):
-        if args.verbose:
+        if Snapman.args.verbose:
             print(self.info_name + ':', self.name)
         print(
             self.info_subvolume + ':', self.subvolume +
@@ -249,7 +249,7 @@ class Section():
             if i.startswith('inode'):
                 return(True)  # Has changed
             else:
-                if args.verbose:
+                if Snapman.args.verbose:
                     print('Section:', self.name, 'has not changed since',
                           os.path.basename(self.newer_snapshot()))
                 return(False)
@@ -333,7 +333,7 @@ class Section():
 
         # Only do actions if enabled property is on:
         if not self.enabled:
-            if args.verbose:
+            if Snapman.args.verbose:
                 print('WARNING: Section', self.name, 'is disabled',
                       file=sys.stderr)
             return(False)
@@ -370,7 +370,7 @@ class Section():
     # Daemonizing:
     def start(self):
         while True:
-            if args.verbose:
+            if Snapman.args.verbose:
                 print("Snapshotting", self.name,
                       "every", self.frequency_sec, "seconds")
             # self.reload()  # Re-read configfile for update properties

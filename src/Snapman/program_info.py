@@ -9,7 +9,7 @@ gettext.translation(EXECUTABLE_NAME, localedir="/usr/share/locale",
 
 PROGRAM_NAME = 'Snapman'
 DESCRIPTION = 'Create and manage filesystem snapshots'
-VERSION = '1.2a'
+VERSION = '2.0a'
 AUTHOR = 'Manuel Domínguez López'  # See AUTHORS file
 MAIL = 'mdomlop@gmail.com'
 SOURCE = "https://github.com/mdomlop/snapman"
@@ -19,6 +19,61 @@ PYVER = ".".join((
     str(sys.version_info[0]),
     str(sys.version_info[1]),
     str(sys.version_info[2])))
+
+USAGE = '''[-h] [-s] [-g] [-d] [-v]
+               [-c CONFIGFILE]
+               [-p PIDFILE]
+               [sections]
+               [section snapshots SECTIONS]
+               [section clean SECTIONS] 
+               [section info SECTIONS]
+               [section properties SECTIONS]
+               [section newsnapshot SECTIONS]
+               [subvolumes]
+               [subvolume snapshots SUBVOLUMES]
+               [subvolume sections SUBVOLUMES]
+               [subvolume clean SUBVOLUMES]
+               [subvolume info SUBVOLUMES]
+               [snapshots]
+               [snapshot info SNAPSHOTS]
+
+Create and manage filesystem snapshots
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CONFIGFILE, --configfile CONFIGFILE
+                        Alternative configuration file
+  -p PIDFILE, --pidfile PIDFILE
+                        Write a pidfile
+  -s, --sample          Print out a sample configuration file
+  -g, --gui             Execute in graphic mode
+  -d, --daemon          Execute in daemon mode
+  -v, --verbose         Set verbosity on if available
+  --version             Show program version and exit
+  --sections            List managed sections
+  --section-snapshots SECTION_SNAPSHOTS
+                        List of snapshots taked from the section
+  --section-clean SECTION_CLEAN
+                        Delete all snapshots taked from the section
+  --section-info SECTION_INFO
+                        Show some information about the section status
+  --section-properties SECTION_PROPERTIES
+                        Print the properties configured for the section
+  --section-newsnapshot SECTION_NEWSNAPSHOT
+                        Force creation a new snapshot for the section
+  --subvolumes          List subvolumes managed by configuration file
+  --subvolume-snapshots SUBVOLUME_SNAPSHOTS
+                        List snapshots taked from the given subvolume
+  --subvolume-sections SUBVOLUME_SECTIONS
+                        List sections which manage the given subvolume
+  --subvolume-clean SUBVOLUME_CLEAN
+                        Delete all snapshots taked from given subvolume
+  --subvolume-info SUBVOLUME_INFO
+                        Show information about the subvolume status
+  --snapshots           Show a list of all subvolumes taked
+  --snapshot-info SNAPSHOT_INFO
+                        Show information about the snapshot status
+'''
 
 COPYRIGHT = '''
 Copyright: 2018 Manuel Domínguez López <mdomlop@gmail.com>

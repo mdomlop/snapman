@@ -1,7 +1,7 @@
 PROGRAM_NAME=Snapman
 EXECUTABLE_NAME=snapman
 DESCRIPTION=A backup system based on Btrfs snapshots.
-VERSION=1.2a
+VERSION=2.0a
 AUTHOR=Manuel Domínguez López
 MAIL=zqbzybc@tznvy.pbz
 SOURCE=https://github.com/mdomlop/snapman
